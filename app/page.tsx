@@ -128,15 +128,23 @@ export default function Portfolio() {
           x: (index) => {
             if (index === 6) return 0 // Center card stays at center
             if (isMobile) {
-              // More spaced mobile layout
-              if (index < 3) return -120 - index * 100
-              if (index < 6) return 120 + (index - 3) * 100
-              return 0
+              // Better spaced mobile layout
+              if (index === 0) return -180
+              if (index === 1) return -120
+              if (index === 2) return -60
+              if (index === 3) return 60
+              if (index === 4) return 120
+              if (index === 5) return 180
+              return 0 // Center card (index 6)
             } else {
-              // Much more spacing for desktop
-              if (index < 3) return -280 - index * 150
-              if (index < 6) return 280 + (index - 3) * 150
-              return 0
+              // Improved desktop spacing for rainbow effect
+              if (index === 0) return -520
+              if (index === 1) return -320
+              if (index === 2) return -200
+              if (index === 3) return 200
+              if (index === 4) return 320
+              if (index === 5) return 520
+              return 0 // Center card (index 6)
             }
           },
           rotation: (index) => {
@@ -153,6 +161,22 @@ export default function Portfolio() {
               if (index === 3) return 6
               if (index === 4) return -8
               if (index === 5) return 4
+              return 0
+            }
+          },
+          y: (index) => {
+            if (index === 6) return 0 // Center card at normal height
+            if (isMobile) {
+              // Subtle rainbow arc for mobile
+              if (index === 0 || index === 5) return 40 // Outermost cards lowest
+              if (index === 1 || index === 4) return 20 // Middle cards slightly down
+              if (index === 2 || index === 3) return 10 // Inner cards slightly down
+              return 0
+            } else {
+              // More pronounced rainbow arc for desktop
+              if (index === 0 || index === 5) return 60 // Outermost cards lowest
+              if (index === 1 || index === 4) return 30 // Middle cards moderately down
+              if (index === 2 || index === 3) return 15 // Inner cards slightly down
               return 0
             }
           },
