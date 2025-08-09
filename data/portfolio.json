@@ -68,7 +68,7 @@
       "title": "E-Commerce Platform",
       "description": "Full-stack e-commerce solution with React, Node.js, and Stripe integration",
       "image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
-      "bgColor": "from-blue-500 to-indigo-600",
+      "bgColor": "from-slate-100 to-slate-200",
       "tech": "React, Node.js, MongoDB",
       "link": "https://github.com/alexjohnson/ecommerce-platform",
       "demo": "https://ecommerce-demo.alexjohnson.dev"
@@ -77,7 +77,7 @@
       "title": "Social Media Dashboard", 
       "description": "Analytics dashboard for social media management with real-time data",
       "image": "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=300&fit=crop",
-      "bgColor": "from-purple-500 to-pink-500",
+      "bgColor": "from-stone-100 to-stone-200",
       "tech": "Next.js, Chart.js, API",
       "link": "https://github.com/alexjohnson/social-dashboard",
       "demo": "https://social-dashboard.alexjohnson.dev"
@@ -86,7 +86,7 @@
       "title": "Task Management App",
       "description": "Collaborative project management tool with team features",
       "image": "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=300&fit=crop", 
-      "bgColor": "from-green-500 to-emerald-600",
+      "bgColor": "from-neutral-100 to-neutral-200",
       "tech": "React Native, Firebase",
       "link": "https://github.com/alexjohnson/task-manager",
       "demo": "https://task-manager.alexjohnson.dev"
@@ -95,7 +95,7 @@
       "title": "AI Chat Interface",
       "description": "Modern chat application with AI integration and real-time messaging",
       "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop",
-      "bgColor": "from-orange-500 to-red-500", 
+      "bgColor": "from-gray-100 to-gray-200", 
       "tech": "TypeScript, WebSocket, AI",
       "link": "https://github.com/alexjohnson/ai-chat",
       "demo": "https://ai-chat.alexjohnson.dev"
@@ -104,7 +104,7 @@
       "title": "Portfolio Website",
       "description": "Animated portfolio showcase with GSAP and modern design principles", 
       "image": "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=300&fit=crop",
-      "bgColor": "from-teal-500 to-blue-500",
+      "bgColor": "from-zinc-100 to-zinc-200",
       "tech": "Next.js, GSAP, Tailwind",
       "link": "https://github.com/alexjohnson/portfolio",
       "demo": "https://alexjohnson.dev"
@@ -113,7 +113,7 @@
       "title": "Weather App",
       "description": "Beautiful weather application with location-based forecasts",
       "image": "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=400&h=300&fit=crop",
-      "bgColor": "from-cyan-500 to-blue-500",
+      "bgColor": "from-amber-50 to-amber-100",
       "tech": "React, Weather API", 
       "link": "https://github.com/alexjohnson/weather-app",
       "demo": "https://weather.alexjohnson.dev"

@@ -34,10 +34,16 @@ export default function Portfolio() {
     checkMobile()
     window.addEventListener("resize", checkMobile)
 
-    // Scroll to hero section on page load
-    if (heroRef.current) {
-      heroRef.current.scrollIntoView({ behavior: "smooth" })
-    }
+    // Scroll to hero section on page load with scroll snap
+    setTimeout(() => {
+      if (heroRef.current) {
+        heroRef.current.scrollIntoView({ 
+          behavior: "smooth",
+          block: "start",
+          inline: "nearest"
+        })
+      }
+    }, 100)
 
     return () => window.removeEventListener("resize", checkMobile)
   }, [])
@@ -62,13 +68,12 @@ export default function Portfolio() {
       gsap.set(".description-text", { y: 20, opacity: 0 })
       gsap.set(".cta-button", { y: 20, opacity: 0 })
 
-      // Portfolio section setup
+      // Portfolio section setup - only animate elements, not containers
       gsap.set(".portfolio-title", { y: 50, opacity: 0 })
       gsap.set(".portfolio-card", { y: isMobile ? 100 : 200, opacity: 0, scale: 0.8, rotation: isMobile ? 0 : 15 })
       gsap.set(".portfolio-line", { scaleX: 0, opacity: 0 })
 
-      // About section setup
-      gsap.set(".about-container", { y: isMobile ? 150 : 300, opacity: 0 })
+      // About section setup - keep containers visible
       gsap.set(".about-title", { y: 50, opacity: 0 })
       gsap.set(".about-image", {
         x: isMobile ? 0 : -200,
@@ -79,14 +84,13 @@ export default function Portfolio() {
       gsap.set(".about-text", { y: 30, opacity: 0 })
       gsap.set(".service-card", { y: 100, opacity: 0, scale: 0.8 })
 
-      // Footer setup
-      gsap.set(".footer-container", { y: isMobile ? 200 : 400, opacity: 0 })
+      // Footer setup - keep containers visible
       gsap.set(".footer-title", { y: 100, opacity: 0 })
       gsap.set(".floating-icon", { y: 200, opacity: 0, scale: 0 })
       gsap.set(".footer-card", { y: 50, opacity: 0 })
 
-      // Hero animations sequence
-      const heroTl = gsap.timeline({ delay: 0.5 })
+      // Hero animations sequence - faster start
+      const heroTl = gsap.timeline({ delay: 0.2 })
 
       // 1. Navbar animation
       heroTl.to(".navbar-link", {
@@ -115,8 +119,8 @@ export default function Portfolio() {
         {
           y: 0,
           opacity: 1,
-          duration: 1.5,
-          ease: "power3.out",
+          duration: 1.0,
+          ease: "back.out(1.2)",
         },
         "+=0.3",
       )
@@ -181,9 +185,9 @@ export default function Portfolio() {
             }
           },
           z: (index) => (index === 6 ? 100 : 50 - Math.abs(index - 3)),
-          duration: 2.0,
-          ease: "power3.out",
-          stagger: 0.08,
+          duration: 1.2,
+          ease: "back.out(1.4)",
+          stagger: 0.06,
         },
         "+=0.1",
       )
@@ -223,12 +227,45 @@ export default function Portfolio() {
         "-=0.4",
       )
 
+      // Configure ScrollTrigger for custom scroll container
+      ScrollTrigger.config({ 
+        autoRefreshEvents: "visibilitychange,DOMContentLoaded,load",
+        limitCallbacks: true
+      })
+
+      // Set the scroll container for ScrollTrigger
+      ScrollTrigger.scrollerProxy(".scroll-container", {
+        scrollTop(value) {
+          const container = document.querySelector('.scroll-container')
+          if (arguments.length) {
+            container.scrollTop = value
+          }
+          return container.scrollTop
+        },
+        getBoundingClientRect() {
+          return {
+            top: 0,
+            left: 0,
+            width: window.innerWidth,
+            height: window.innerHeight
+          }
+        },
+        pinType: "transform"
+      })
+
+      // Add debug scroll event
+      const scrollContainer = document.querySelector('.scroll-container')
+      scrollContainer?.addEventListener('scroll', () => {
+        console.log('Scroll detected:', scrollContainer.scrollTop)
+      })
+
       // Navbar hide/show on scroll (disabled on mobile when menu is open)
       let lastScrollY = 0
       ScrollTrigger.create({
         trigger: "body",
         start: "top top",
         end: "bottom bottom",
+        scroller: ".scroll-container",
         onUpdate: (self) => {
           if (isMobileMenuOpen) return // Don't hide navbar when mobile menu is open
 
@@ -241,6 +278,7 @@ export default function Portfolio() {
               ease: "power2.out",
             })
           } else if (currentScrollY < lastScrollY) {
+          } else if (currentScrollY < lastScrollY) {
             // Scrolling up - show navbar
             gsap.to(navbarRef.current, {
               y: 0,
@@ -252,118 +290,283 @@ export default function Portfolio() {
         },
       })
 
-      // Wait for hero animation to complete, then setup ScrollTriggers
-      heroTl.call(() => {
-        console.log("Setting up ScrollTriggers...")
+      // Setup ScrollTriggers immediately, don't wait for hero animation
+      console.log("Setting up ScrollTriggers...")
 
-        // Background color change for Portfolio section
-        ScrollTrigger.create({
-          trigger: portfolioRef.current,
-          start: "top 80%",
-          end: "bottom 20%",
-          onEnter: () => {
-            console.log("🔵 Entering Portfolio - Blue Background")
-            gsap.to(document.body, {
-              backgroundColor: "#85CBD9",
-              duration: 1.5,
-              ease: "power2.inOut",
-            })
-          },
-          onLeave: () => {
-            console.log("🟡 Leaving Portfolio - Yellow Background")
-            gsap.to(document.body, {
-              backgroundColor: "#FFC86D",
-              duration: 1.5,
-              ease: "power2.inOut",
-            })
-          },
-          onEnterBack: () => {
-            console.log("🔵 Re-entering Portfolio - Blue Background")
-            gsap.to(document.body, {
-              backgroundColor: "#85CBD9",
-              duration: 1.5,
-              ease: "power2.inOut",
-            })
-          },
-          onLeaveBack: () => {
-            console.log("⚪ Leaving Portfolio Back - White Background")
-            gsap.to(document.body, {
-              backgroundColor: "#ffffff",
-              duration: 1.5,
-              ease: "power2.inOut",
-            })
-          },
-        })
-
-        // Background color change for About section
-        ScrollTrigger.create({
-          trigger: aboutRef.current,
-          start: "top 80%",
-          end: "bottom 20%",
-          onEnter: () => {
-            console.log("🟡 Entering About - Yellow Background")
-            gsap.to(document.body, {
-              backgroundColor: "#FFC86D",
-              duration: 1.5,
-              ease: "power2.inOut",
-            })
-          },
-          onLeave: () => {
-            console.log("🔴 Leaving About - Red Background")
-            gsap.to(document.body, {
-              backgroundColor: "#FC8585",
-              duration: 1.5,
-              ease: "power2.inOut",
-            })
-          },
-          onEnterBack: () => {
-            console.log("🟡 Re-entering About - Yellow Background")
-            gsap.to(document.body, {
-              backgroundColor: "#FFC86D",
-              duration: 1.5,
-              ease: "power2.inOut",
-            })
-          },
-          onLeaveBack: () => {
-            console.log("🔵 Leaving About Back - Blue Background")
-            gsap.to(document.body, {
-              backgroundColor: "#85CBD9",
-              duration: 1.5,
-              ease: "power2.inOut",
-            })
-          },
-        })
-
-        // Background color change for Footer section
-        ScrollTrigger.create({
-          trigger: footerRef.current,
-          start: "top 80%",
-          onEnter: () => {
-            console.log("🔴 Entering Footer - Red Background")
-            gsap.to(document.body, {
-              backgroundColor: "#FC8585",
-              duration: 1.5,
-              ease: "power2.inOut",
-            })
-          },
-          onLeaveBack: () => {
-            console.log("🟡 Leaving Footer Back - Yellow Background")
-            gsap.to(document.body, {
-              backgroundColor: "#FFC86D",
-              duration: 1.5,
-              ease: "power2.inOut",
-            })
-          },
-        })
-
-        // Refresh ScrollTrigger to ensure proper setup
-        ScrollTrigger.refresh()
+      // Background color change for Hero section
+      ScrollTrigger.create({
+        trigger: heroRef.current,
+        start: "top 80%",
+        end: "bottom 20%",
+        scroller: ".scroll-container",
+        onEnter: () => {
+          console.log("⚪ Entering Hero - White Background")
+          console.log("Hero ScrollTrigger FIRED - onEnter")
+          gsap.to(document.body, {
+            backgroundColor: "#ffffff",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onLeave: () => {
+          console.log("🔵 Leaving Hero - Blue Background")
+          gsap.to(document.body, {
+            backgroundColor: "#85CBD9",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onEnterBack: () => {
+          console.log("⚪ Re-entering Hero - White Background")
+          gsap.to(document.body, {
+            backgroundColor: "#ffffff",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onLeaveBack: () => {
+          console.log("⚪ Staying Hero - White Background")
+          // Keep white background when scrolling above hero
+          gsap.to(document.body, {
+            backgroundColor: "#ffffff",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
       })
 
-      // Portfolio section animation
+      // Background color change for Portfolio section
       ScrollTrigger.create({
         trigger: portfolioRef.current,
-        start: "top 90%",
+        start: "top 80%",
+        end: "bottom 20%",
+        scroller: ".scroll-container",
+        onEnter: () => {
+          console.log("🔵 Entering Portfolio - Blue Background")
+          console.log("Portfolio ScrollTrigger FIRED - onEnter")
+          gsap.to(document.body, {
+            backgroundColor: "#85CBD9",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onLeave: () => {
+          console.log("🟡 Leaving Portfolio - Yellow Background")
+          gsap.to(document.body, {
+            backgroundColor: "#FFC86D",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onEnterBack: () => {
+          console.log("🔵 Re-entering Portfolio - Blue Background")
+          gsap.to(document.body, {
+            backgroundColor: "#85CBD9",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onLeaveBack: () => {
+          console.log("⚪ Leaving Portfolio Back - White Background")
+          gsap.to(document.body, {
+            backgroundColor: "#ffffff",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+      })
+
+      // Background color change for About section
+      ScrollTrigger.create({
+        trigger: aboutRef.current,
+        start: "top 80%",
+        end: "bottom 20%",
+        scroller: ".scroll-container",
+        onEnter: () => {
+          console.log("🟡 Entering About - Yellow Background")
+          gsap.to(document.body, {
+            backgroundColor: "#FFC86D",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onLeave: () => {
+          console.log("🔴 Leaving About - Red Background")
+          gsap.to(document.body, {
+            backgroundColor: "#FC8585",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onEnterBack: () => {
+          console.log("🟡 Re-entering About - Yellow Background")
+          gsap.to(document.body, {
+            backgroundColor: "#FFC86D",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onLeaveBack: () => {
+          console.log("🔵 Leaving About Back - Blue Background")
+          gsap.to(document.body, {
+            backgroundColor: "#85CBD9",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+      })
+
+      // Background color change for Footer section
+      ScrollTrigger.create({
+        trigger: footerRef.current,
+        start: "top 80%",
+        end: "bottom 20%",
+        scroller: ".scroll-container",
+        onEnter: () => {
+          console.log("🔴 Entering Footer - Red Background")
+          gsap.to(document.body, {
+            backgroundColor: "#FC8585",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onLeave: () => {
+          console.log("🔴 Staying Footer - Red Background")
+          // Keep red background when scrolling past footer
+          gsap.to(document.body, {
+            backgroundColor: "#FC8585",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onEnterBack: () => {
+          console.log("🔴 Re-entering Footer - Red Background")
+          gsap.to(document.body, {
+            backgroundColor: "#FC8585",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onLeaveBack: () => {
+          console.log("🟡 Leaving Footer Back - Yellow Background")
+          gsap.to(document.body, {
+            backgroundColor: "#FFC86D",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+      })
+
+      // Handle edge cases - top and bottom of document
+      ScrollTrigger.create({
+        trigger: "body",
+        start: "top top",
+        end: "top 100px",
+        scroller: ".scroll-container",
+        onEnter: () => {
+          console.log("🏠 At very top - White Background")
+          gsap.to(document.body, {
+            backgroundColor: "#ffffff",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+      })
+
+      // Immediate visibility check - ensure all visible sections are shown
+      ScrollTrigger.batch([".portfolio-section", ".about-section", ".footer-section"], {
+        scroller: ".scroll-container",
+        onEnter: (elements) => {
+          elements.forEach((section) => {
+            // Make sure section content is visible if it's in viewport
+            const rect = section.getBoundingClientRect()
+            if (rect.top < window.innerHeight && rect.bottom > 0) {
+              if (section.classList.contains("portfolio-section")) {
+                gsap.set([".portfolio-line", ".portfolio-title", ".portfolio-card"], {
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  rotation: 0,
+                  scaleX: 1
+                })
+              }
+              if (section.classList.contains("about-section")) {
+                gsap.set([".about-title", ".about-image", ".about-text", ".service-card"], {
+                  opacity: 1,
+                  x: 0,
+                  y: 0,
+                  scale: 1,
+                  rotation: 0
+                })
+              }
+              if (section.classList.contains("footer-section")) {
+                gsap.set([".footer-title", ".floating-icon", ".footer-card"], {
+                  opacity: 1,
+                  y: 0,
+                  scale: 1
+                })
+              }
+            }
+          })
+        },
+        start: "top bottom",
+        end: "bottom top",
+      })
+
+      // Refresh ScrollTrigger after a short delay to ensure proper setup
+      setTimeout(() => {
+        ScrollTrigger.refresh()
+        console.log("ScrollTrigger refreshed")
+        console.log("Total ScrollTrigger instances:", ScrollTrigger.getAll().length)
+        
+        // Test if scroll container is working
+        const scrollContainer = document.querySelector('.scroll-container')
+        console.log("Scroll container found:", !!scrollContainer)
+        console.log("Scroll container height:", scrollContainer?.scrollHeight)
+        console.log("Scroll container scroll top:", scrollContainer?.scrollTop)
+      }, 500)
+      
+      // Fallback: Force visibility of all sections after a short delay
+      setTimeout(() => {
+        const sections = document.querySelectorAll('.portfolio-section, .about-section, .footer-section')
+        sections.forEach((section) => {
+          const rect = section.getBoundingClientRect()
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            if (section.classList.contains("portfolio-section")) {
+              gsap.set([".portfolio-line", ".portfolio-title", ".portfolio-card"], {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                rotation: 0,
+                scaleX: 1
+              })
+            }
+            if (section.classList.contains("about-section")) {
+              gsap.set([".about-title", ".about-image", ".about-text", ".service-card"], {
+                opacity: 1,
+                x: 0,
+                y: 0,
+                scale: 1,
+                rotation: 0
+              })
+            }
+            if (section.classList.contains("footer-section")) {
+              gsap.set([".footer-title", ".floating-icon", ".footer-card"], {
+                opacity: 1,
+                y: 0,
+                scale: 1
+              })
+            }
+          }
+        })
+      }, 1000)
+
+      // Portfolio section animation - with reversible triggers
+      ScrollTrigger.create({
+        trigger: portfolioRef.current,
+        start: "top 95%", // Earlier trigger
+        end: "bottom 5%",
+        scroller: ".scroll-container",
         onEnter: () => {
           const portfolioTl = gsap.timeline()
 
@@ -399,21 +602,26 @@ export default function Portfolio() {
             "-=0.5",
           )
         },
+        onEnterBack: () => {
+          // Ensure elements are visible when scrolling back up
+          gsap.set([".portfolio-line", ".portfolio-title", ".portfolio-card"], {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            rotation: 0,
+            scaleX: 1
+          })
+        },
       })
 
-      // About section animation
+      // About section animation - with reversible triggers
       ScrollTrigger.create({
         trigger: aboutRef.current,
-        start: "top 90%",
+        start: "top 95%", // Earlier trigger
+        end: "bottom 5%",
+        scroller: ".scroll-container",
         onEnter: () => {
           const aboutTl = gsap.timeline()
-
-          aboutTl.to(".about-container", {
-            y: 0,
-            opacity: 1,
-            duration: 1.2,
-            ease: "power4.out",
-          })
 
           aboutTl.to(
             ".about-title",
@@ -423,7 +631,6 @@ export default function Portfolio() {
               duration: 0.8,
               ease: "power2.out",
             },
-            "-=0.8",
           )
 
           aboutTl.to(
@@ -464,21 +671,26 @@ export default function Portfolio() {
             "-=0.4",
           )
         },
+        onEnterBack: () => {
+          // Ensure elements are visible when scrolling back up
+          gsap.set([".about-title", ".about-image", ".about-text", ".service-card"], {
+            opacity: 1,
+            x: 0,
+            y: 0,
+            scale: 1,
+            rotation: 0
+          })
+        },
       })
 
-      // Footer section animation
+      // Footer section animation - with reversible triggers
       ScrollTrigger.create({
         trigger: footerRef.current,
-        start: "top 90%",
+        start: "top 95%", // Earlier trigger
+        end: "bottom 5%",
+        scroller: ".scroll-container",
         onEnter: () => {
           const footerTl = gsap.timeline()
-
-          footerTl.to(".footer-container", {
-            y: 0,
-            opacity: 1,
-            duration: 1.2,
-            ease: "power4.out",
-          })
 
           footerTl.to(
             ".footer-title",
@@ -488,7 +700,6 @@ export default function Portfolio() {
               duration: 1,
               ease: "power2.out",
             },
-            "-=0.8",
           )
 
           footerTl.to(
@@ -515,24 +726,34 @@ export default function Portfolio() {
             "-=0.3",
           )
         },
+        onEnterBack: () => {
+          // Ensure elements are visible when scrolling back up
+          gsap.set([".footer-title", ".floating-icon", ".footer-card"], {
+            opacity: 1,
+            y: 0,
+            scale: 1
+          })
+        },
       })
 
-      // Infinite scrolling animation for portfolio cards (slower on mobile)
+      // Infinite scrolling animation for portfolio cards - optimized
       gsap.to(".portfolio-cards-container", {
         x: "-50%",
-        duration: isMobile ? 30 : 20, // Slower on mobile
+        duration: isMobile ? 40 : 25, // Slower for better performance
         ease: "none",
         repeat: -1,
+        force3D: true, // Hardware acceleration
       })
 
-      // Continuous floating animations
+      // Continuous floating animations - optimized
       gsap.to(".floating-icon", {
-        y: -20,
+        y: -15,
         repeat: -1,
         yoyo: true,
-        duration: 2,
+        duration: 3, // Slower for better performance
         ease: "sine.inOut",
-        stagger: 0.3,
+        stagger: 0.5,
+        force3D: true, // Hardware acceleration
       })
     })
 
@@ -625,9 +846,9 @@ export default function Portfolio() {
               <span className="text-xs">🌐</span>
             </div>
             <div className="w-6 h-6 md:w-8 md:h-8 bg-red-500 rounded-full flex items-center justify-center relative">
-              <span className="text-xs text-white">🛒</span>
+              <span className="text-xs text-gray-800">🛒</span>
               <div className="absolute -top-1 -right-1 w-3 h-3 md:w-4 md:h-4 bg-red-500 rounded-full flex items-center justify-center">
-                <span className="text-xs text-white">1</span>
+                <span className="text-xs text-gray-800">1</span>
               </div>
             </div>
 
@@ -662,7 +883,7 @@ export default function Portfolio() {
       <section
         id="home"
         ref={heroRef}
-        className="hero-section snap-section flex flex-col items-center justify-center relative px-4 pt-16 md:pt-20"
+        className="hero-section snap-section flex flex-col items-center justify-center relative px-4 z-10"
       >
         {/* Single Main Line */}
         <div className="absolute top-24 md:top-32 left-1/2 transform -translate-x-1/2 w-full max-w-4xl">
@@ -717,14 +938,14 @@ export default function Portfolio() {
         </div>
 
         {/* CTA Button */}
-        <button className="cta-button bg-gray-900 text-white px-6 md:px-8 py-2 md:py-3 rounded-full font-medium hover:bg-gray-800 transition-colors text-sm md:text-base">
+        <button className="cta-button bg-gray-900 text-gray-800 px-6 md:px-8 py-2 md:py-3 rounded-full font-medium hover:bg-gray-800 transition-colors text-sm md:text-base">
           View My Work
         </button>
       </section>
 
       {/* Portfolio Section */}
-      <section id="projects" ref={portfolioRef} className="portfolio-section snap-section py-12 md:py-16 lg:py-20 relative z-10">
-        <div className="max-w-7xl mx-auto px-4 md:px-6">
+      <section id="projects" ref={portfolioRef} className="portfolio-section snap-section flex flex-col justify-center relative z-10">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16 lg:py-20">
           {/* Portfolio Line */}
           <div className="flex justify-center mb-6 md:mb-8">
             <div className="portfolio-line h-0.5 bg-white/30 w-full max-w-2xl origin-center"></div>
@@ -732,8 +953,8 @@ export default function Portfolio() {
 
           {/* Portfolio Title */}
           <div className="portfolio-title text-center mb-12 md:mb-16">
-            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-white mb-2 md:mb-4">Featured Projects</h2>
-            <p className="text-white/80 text-base md:text-lg">Real-world applications built with modern technologies</p>
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-800 mb-2 md:mb-4">Featured Projects</h2>
+            <p className="text-gray-800/80 text-base md:text-lg">Real-world applications built with modern technologies</p>
           </div>
 
           {/* Infinite Scrolling Cards Container */}
@@ -759,10 +980,10 @@ export default function Portfolio() {
                       className="w-full h-36 md:h-48 object-cover transition-transform duration-500 hover:scale-110"
                     />
                   </div>
-                  <h3 className="text-lg md:text-2xl font-bold text-white mb-2 md:mb-3">{item.title}</h3>
-                  <p className="text-white/90 leading-relaxed text-sm md:text-base mb-2">{item.description}</p>
-                  {item.tech && <div className="text-white/70 text-xs md:text-sm font-medium mb-3">{item.tech}</div>}
-                  <div className="mt-3 md:mt-4 flex items-center text-white font-semibold text-sm md:text-base">
+                  <h3 className="text-lg md:text-2xl font-bold text-gray-800 mb-2 md:mb-3">{item.title}</h3>
+                  <p className="text-gray-800/90 leading-relaxed text-sm md:text-base mb-2">{item.description}</p>
+                  {item.tech && <div className="text-gray-800/70 text-xs md:text-sm font-medium mb-3">{item.tech}</div>}
+                  <div className="mt-3 md:mt-4 flex items-center text-gray-800 font-semibold text-sm md:text-base">
                     <a href={item.demo || item.link} target="_blank" rel="noopener noreferrer" className="flex items-center">
                       <span>View Project</span>
                       <svg
@@ -797,10 +1018,10 @@ export default function Portfolio() {
                       className="w-full h-36 md:h-48 object-cover transition-transform duration-500 hover:scale-110"
                     />
                   </div>
-                  <h3 className="text-lg md:text-2xl font-bold text-white mb-2 md:mb-3">{item.title}</h3>
-                  <p className="text-white/90 leading-relaxed text-sm md:text-base mb-2">{item.description}</p>
-                  {item.tech && <div className="text-white/70 text-xs md:text-sm font-medium mb-3">{item.tech}</div>}
-                  <div className="mt-3 md:mt-4 flex items-center text-white font-semibold text-sm md:text-base">
+                  <h3 className="text-lg md:text-2xl font-bold text-gray-800 mb-2 md:mb-3">{item.title}</h3>
+                  <p className="text-gray-800/90 leading-relaxed text-sm md:text-base mb-2">{item.description}</p>
+                  {item.tech && <div className="text-gray-800/70 text-xs md:text-sm font-medium mb-3">{item.tech}</div>}
+                  <div className="mt-3 md:mt-4 flex items-center text-gray-800 font-semibold text-sm md:text-base">
                     <a href={item.demo || item.link} target="_blank" rel="noopener noreferrer" className="flex items-center">
                       <span>View Project</span>
                       <svg
@@ -821,8 +1042,8 @@ export default function Portfolio() {
       </section>
 
       {/* About Section */}
-      <section id="about" ref={aboutRef} className="about-section snap-section py-12 md:py-16 lg:py-20">
-        <div className="about-container max-w-7xl mx-auto px-4 md:px-6">
+      <section id="about" ref={aboutRef} className="about-section snap-section flex flex-col justify-center relative z-10">
+        <div className="about-container max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16 lg:py-20">
           <div className="about-title text-center mb-12 md:mb-16">
             <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-800 mb-2 md:mb-4">{portfolioData.about.title}</h2>
             <p className="text-gray-600 text-base md:text-lg">{portfolioData.about.subtitle}</p>
@@ -871,7 +1092,7 @@ export default function Portfolio() {
       </section>
 
       {/* Footer Section */}
-      <section id="contact" ref={footerRef} className="footer-section snap-section flex items-center justify-center relative px-4">
+      <section id="contact" ref={footerRef} className="footer-section snap-section flex items-center justify-center relative px-4 z-10">
         <div className="footer-container text-center max-w-4xl mx-auto">
           <h2 className="footer-title text-2xl sm:text-4xl md:text-6xl lg:text-8xl font-black mb-8 md:mb-12 text-white leading-tight px-4">
             {portfolioData.branding.tagline}
