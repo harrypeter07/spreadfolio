@@ -1,0 +1,152 @@
+{
+  "personal": {
+    "name": "Alex Johnson",
+    "title": "Full-Stack Developer",
+    "subtitle": "PORTFOLIO",
+    "description": "Crafting digital experiences with modern technologies and creative solutions. Passionate about clean code, beautiful design, and user-centered development.",
+    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop",
+    "email": "alex.johnson@example.com",
+    "phone": "+1 (555) 123-4567",
+    "location": "San Francisco, CA"
+  },
+  "branding": {
+    "logo": "DevPortfolio",
+    "tagline": "We built the rocket, they flew 🚀"
+  },
+  "navigation": [
+    { "label": "Home", "href": "#home" },
+    { "label": "Projects", "href": "#projects" },
+    { "label": "About", "href": "#about" },
+    { "label": "Contact", "href": "#contact" }
+  ],
+  "skills": [
+    {
+      "title": "Frontend",
+      "tech": "React, Next.js",
+      "image": "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=300&h=400&fit=crop",
+      "bg": "#4F46E5"
+    },
+    {
+      "title": "Backend", 
+      "tech": "Node.js, APIs",
+      "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=300&h=400&fit=crop",
+      "bg": "#059669"
+    },
+    {
+      "title": "UI/UX",
+      "tech": "Figma, Design", 
+      "image": "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=300&h=400&fit=crop",
+      "bg": "#DC2626"
+    },
+    {
+      "title": "Mobile",
+      "tech": "React Native",
+      "image": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=300&h=400&fit=crop", 
+      "bg": "#7C3AED"
+    },
+    {
+      "title": "Animation",
+      "tech": "GSAP, Framer",
+      "image": "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=300&h=400&fit=crop",
+      "bg": "#EA580C"
+    },
+    {
+      "title": "Full-Stack",
+      "tech": "End-to-End",
+      "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop",
+      "bg": "#0891B2"
+    },
+    {
+      "title": "Open Source", 
+      "tech": "GitHub, Community",
+      "image": "https://images.unsplash.com/photo-1618477388954-7852f32655ec?w=300&h=400&fit=crop",
+      "bg": "#65A30D"
+    }
+  ],
+  "projects": [
+    {
+      "title": "E-Commerce Platform",
+      "description": "Full-stack e-commerce solution with React, Node.js, and Stripe integration",
+      "image": "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop",
+      "bgColor": "from-blue-500 to-indigo-600",
+      "tech": "React, Node.js, MongoDB",
+      "link": "https://github.com/alexjohnson/ecommerce-platform",
+      "demo": "https://ecommerce-demo.alexjohnson.dev"
+    },
+    {
+      "title": "Social Media Dashboard", 
+      "description": "Analytics dashboard for social media management with real-time data",
+      "image": "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=300&fit=crop",
+      "bgColor": "from-purple-500 to-pink-500",
+      "tech": "Next.js, Chart.js, API",
+      "link": "https://github.com/alexjohnson/social-dashboard",
+      "demo": "https://social-dashboard.alexjohnson.dev"
+    },
+    {
+      "title": "Task Management App",
+      "description": "Collaborative project management tool with team features",
+      "image": "https://images.unsplash.com/photo-1611224923853-80b023f02d71?w=400&h=300&fit=crop", 
+      "bgColor": "from-green-500 to-emerald-600",
+      "tech": "React Native, Firebase",
+      "link": "https://github.com/alexjohnson/task-manager",
+      "demo": "https://task-manager.alexjohnson.dev"
+    },
+    {
+      "title": "AI Chat Interface",
+      "description": "Modern chat application with AI integration and real-time messaging",
+      "image": "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=400&h=300&fit=crop",
+      "bgColor": "from-orange-500 to-red-500", 
+      "tech": "TypeScript, WebSocket, AI",
+      "link": "https://github.com/alexjohnson/ai-chat",
+      "demo": "https://ai-chat.alexjohnson.dev"
+    },
+    {
+      "title": "Portfolio Website",
+      "description": "Animated portfolio showcase with GSAP and modern design principles", 
+      "image": "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=300&fit=crop",
+      "bgColor": "from-teal-500 to-blue-500",
+      "tech": "Next.js, GSAP, Tailwind",
+      "link": "https://github.com/alexjohnson/portfolio",
+      "demo": "https://alexjohnson.dev"
+    },
+    {
+      "title": "Weather App",
+      "description": "Beautiful weather application with location-based forecasts",
+      "image": "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=400&h=300&fit=crop",
+      "bgColor": "from-cyan-500 to-blue-500",
+      "tech": "React, Weather API", 
+      "link": "https://github.com/alexjohnson/weather-app",
+      "demo": "https://weather.alexjohnson.dev"
+    }
+  ],
+  "about": {
+    "title": "About Me",
+    "subtitle": "Passionate about creating exceptional experiences",
+    "mainText": "I'm a creative designer and developer passionate about crafting beautiful, functional experiences that make a difference in people's lives.",
+    "secondaryText": "With over 5 years of experience in digital design and development, I specialize in creating immersive web experiences that blend creativity with functionality.",
+    "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop",
+    "services": [
+      { "title": "Design Strategy", "icon": "🎨" },
+      { "title": "Web Development", "icon": "💻" },
+      { "title": "Brand Identity", "icon": "✨" },
+      { "title": "User Experience", "icon": "🚀" }
+    ]
+  },
+  "contact": {
+    "title": "Let's Work Together",
+    "subtitle": "Ready to start your next project?",
+    "button": "Get In Touch",
+    "email": "alex.johnson@example.com",
+    "phone": "+1 (555) 123-4567"
+  },
+  "social": {
+    "github": "https://github.com/alexjohnson",
+    "linkedin": "https://linkedin.com/in/alexjohnson",
+    "twitter": "https://twitter.com/alexjohnson",
+    "behance": "https://behance.net/alexjohnson",
+    "dribbble": "https://dribbble.com/alexjohnson"
+  },
+  "footer": {
+    "icons": ["🌟", "✨", "🎨", "💫", "🔥"]
+  }
+}
