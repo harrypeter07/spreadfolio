@@ -646,8 +646,8 @@ export default function Portfolio() {
 
         {/* Main Title */}
         <div className="main-title text-center mb-12 md:mb-20 z-20 absolute top-12 md:top-20">
-          <h1 className="text-xl md:text-3xl lg:text-4xl font-light text-gray-800 mb-1">Full-Stack Developer</h1>
-          <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-900">PORTFOLIO</h2>
+          <h1 className="text-xl md:text-3xl lg:text-4xl font-light text-gray-800 mb-1">{portfolioData.personal.title}</h1>
+          <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-900">{portfolioData.personal.subtitle}</h2>
         </div>
 
         {/* Card Container */}
@@ -656,50 +656,7 @@ export default function Portfolio() {
           className="card-container relative flex justify-center items-center mb-12 md:mb-20 mt-20 md:mt-32"
           style={{ perspective: "1000px" }}
         >
-          {[
-            {
-              image: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=300&h=400&fit=crop",
-              bg: "#4F46E5",
-              title: "Frontend",
-              tech: "React, Next.js"
-            },
-            {
-              image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=300&h=400&fit=crop",
-              bg: "#059669",
-              title: "Backend",
-              tech: "Node.js, APIs"
-            },
-            {
-              image: "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=300&h=400&fit=crop",
-              bg: "#DC2626",
-              title: "UI/UX",
-              tech: "Figma, Design"
-            },
-            {
-              image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=300&h=400&fit=crop",
-              bg: "#7C3AED",
-              title: "Mobile",
-              tech: "React Native"
-            },
-            {
-              image: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=300&h=400&fit=crop",
-              bg: "#EA580C",
-              title: "Animation",
-              tech: "GSAP, Framer"
-            },
-            {
-              image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop",
-              bg: "#0891B2",
-              title: "Full-Stack",
-              tech: "End-to-End"
-            },
-            {
-              image: "https://images.unsplash.com/photo-1618477388954-7852f32655ec?w=300&h=400&fit=crop",
-              bg: "#65A30D",
-              title: "Open Source",
-              tech: "GitHub, Community"
-            },
-          ].map((card, index) => (
+          {portfolioData.skills.map((card, index) => (
             <div key={index} className="hero-card absolute">
               <div
                 className="relative overflow-hidden rounded-2xl w-[120px] h-[160px] sm:w-[150px] sm:h-[200px] md:w-[180px] md:h-[240px] lg:w-[200px] lg:h-[260px]"
@@ -730,9 +687,7 @@ export default function Portfolio() {
         {/* Description Text */}
         <div className="description-text text-center max-w-2xl mb-6 md:mb-8 mt-8 md:mt-16 px-4">
           <p className="text-gray-600 text-sm md:text-base leading-relaxed">
-            Crafting digital experiences with modern technologies and creative solutions.
-            <br className="hidden sm:block" />
-            Passionate about clean code, beautiful design, and user-centered development.
+            {portfolioData.personal.description}
           </p>
         </div>
 
@@ -760,44 +715,7 @@ export default function Portfolio() {
           <div className="portfolio-cards-wrapper relative">
             <div className="portfolio-cards-container flex gap-4 md:gap-8" style={{ width: "max-content" }}>
               {/* First set of cards */}
-              {[
-                {
-                  title: "Web Design",
-                  description: "Modern, responsive websites that captivate and convert",
-                  image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=300&fit=crop",
-                  bgColor: "from-orange-500 to-red-500",
-                },
-                {
-                  title: "Mobile App",
-                  description: "Native and cross-platform mobile experiences",
-                  image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop",
-                  bgColor: "from-purple-500 to-pink-500",
-                },
-                {
-                  title: "Branding",
-                  description: "Complete brand identity and visual systems",
-                  image: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&h=300&fit=crop",
-                  bgColor: "from-green-500 to-teal-500",
-                },
-                {
-                  title: "UI/UX",
-                  description: "User-centered design that drives engagement",
-                  image: "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=400&h=300&fit=crop",
-                  bgColor: "from-yellow-500 to-orange-500",
-                },
-                {
-                  title: "Development",
-                  description: "Full-stack solutions with cutting-edge technology",
-                  image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop",
-                  bgColor: "from-indigo-500 to-purple-500",
-                },
-                {
-                  title: "Strategy",
-                  description: "Digital transformation and growth strategies",
-                  image: "https://images.unsplash.com/photo-1553028826-f4804a6dba3b?w=400&h=300&fit=crop",
-                  bgColor: "from-pink-500 to-rose-500",
-                },
-              ].map((item, index) => (
+              {portfolioData.projects.map((item, index) => (
                 <div
                   key={index}
                   className={`portfolio-card bg-gradient-to-br ${item.bgColor} rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer shadow-xl flex-shrink-0 w-64 md:w-80 relative z-10`}
@@ -817,59 +735,25 @@ export default function Portfolio() {
                     />
                   </div>
                   <h3 className="text-lg md:text-2xl font-bold text-white mb-2 md:mb-3">{item.title}</h3>
-                  <p className="text-white/90 leading-relaxed text-sm md:text-base">{item.description}</p>
+                  <p className="text-white/90 leading-relaxed text-sm md:text-base mb-2">{item.description}</p>
+                  {item.tech && <div className="text-white/70 text-xs md:text-sm font-medium mb-3">{item.tech}</div>}
                   <div className="mt-3 md:mt-4 flex items-center text-white font-semibold text-sm md:text-base">
-                    <span>View Project</span>
-                    <svg
-                      className="w-3 h-3 md:w-4 md:h-4 ml-2 transition-transform group-hover:translate-x-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                    <a href={item.demo || item.link} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                      <span>View Project</span>
+                      <svg
+                        className="w-3 h-3 md:w-4 md:h-4 ml-2 transition-transform group-hover:translate-x-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </a>
                   </div>
                 </div>
               ))}
               {/* Duplicate set for seamless loop */}
-              {[
-                {
-                  title: "Web Design",
-                  description: "Modern, responsive websites that captivate and convert",
-                  image: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=400&h=300&fit=crop",
-                  bgColor: "from-orange-500 to-red-500",
-                },
-                {
-                  title: "Mobile App",
-                  description: "Native and cross-platform mobile experiences",
-                  image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=400&h=300&fit=crop",
-                  bgColor: "from-purple-500 to-pink-500",
-                },
-                {
-                  title: "Branding",
-                  description: "Complete brand identity and visual systems",
-                  image: "https://images.unsplash.com/photo-1558655146-d09347e92766?w=400&h=300&fit=crop",
-                  bgColor: "from-green-500 to-teal-500",
-                },
-                {
-                  title: "UI/UX",
-                  description: "User-centered design that drives engagement",
-                  image: "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=400&h=300&fit=crop",
-                  bgColor: "from-yellow-500 to-orange-500",
-                },
-                {
-                  title: "Development",
-                  description: "Full-stack solutions with cutting-edge technology",
-                  image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=400&h=300&fit=crop",
-                  bgColor: "from-indigo-500 to-purple-500",
-                },
-                {
-                  title: "Strategy",
-                  description: "Digital transformation and growth strategies",
-                  image: "https://images.unsplash.com/photo-1553028826-f4804a6dba3b?w=400&h=300&fit=crop",
-                  bgColor: "from-pink-500 to-rose-500",
-                },
-              ].map((item, index) => (
+              {portfolioData.projects.map((item, index) => (
                 <div
                   key={`duplicate-${index}`}
                   className={`portfolio-card bg-gradient-to-br ${item.bgColor} rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer shadow-xl flex-shrink-0 w-64 md:w-80 relative z-10`}
@@ -889,17 +773,20 @@ export default function Portfolio() {
                     />
                   </div>
                   <h3 className="text-lg md:text-2xl font-bold text-white mb-2 md:mb-3">{item.title}</h3>
-                  <p className="text-white/90 leading-relaxed text-sm md:text-base">{item.description}</p>
+                  <p className="text-white/90 leading-relaxed text-sm md:text-base mb-2">{item.description}</p>
+                  {item.tech && <div className="text-white/70 text-xs md:text-sm font-medium mb-3">{item.tech}</div>}
                   <div className="mt-3 md:mt-4 flex items-center text-white font-semibold text-sm md:text-base">
-                    <span>View Project</span>
-                    <svg
-                      className="w-3 h-3 md:w-4 md:h-4 ml-2 transition-transform group-hover:translate-x-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                    <a href={item.demo || item.link} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                      <span>View Project</span>
+                      <svg
+                        className="w-3 h-3 md:w-4 md:h-4 ml-2 transition-transform group-hover:translate-x-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </a>
                   </div>
                 </div>
               ))}
@@ -912,8 +799,8 @@ export default function Portfolio() {
       <section ref={aboutRef} className="about-section min-h-screen py-12 md:py-16 lg:py-20">
         <div className="about-container max-w-7xl mx-auto px-4 md:px-6">
           <div className="about-title text-center mb-12 md:mb-16">
-            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-800 mb-2 md:mb-4">About Me</h2>
-            <p className="text-gray-600 text-base md:text-lg">Passionate about creating exceptional experiences</p>
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-800 mb-2 md:mb-4">{portfolioData.about.title}</h2>
+            <p className="text-gray-600 text-base md:text-lg">{portfolioData.about.subtitle}</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
@@ -921,8 +808,8 @@ export default function Portfolio() {
               <div className="about-image-container w-60 h-72 sm:w-72 sm:h-80 md:w-80 md:h-96 mx-auto lg:mx-0">
                 <div className="about-image-bg absolute inset-0 bg-gradient-to-br from-[#FC8585] to-[#FFC86D] rounded-2xl md:rounded-3xl transform rotate-3"></div>
                 <Image
-                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=500&fit=crop"
-                  alt="About Me"
+                  src={portfolioData.about.image}
+                  alt={portfolioData.about.title}
                   width={400}
                   height={500}
                   className="about-image-main relative rounded-2xl md:rounded-3xl shadow-2xl border-2 md:border-4 border-white/30 w-full h-full object-cover"
@@ -932,21 +819,14 @@ export default function Portfolio() {
             <div className="space-y-6 md:space-y-8 order-1 lg:order-2">
               <div>
                 <p className="about-text text-base md:text-xl leading-relaxed text-gray-700 mb-4 md:mb-6">
-                  I'm a creative designer and developer passionate about crafting beautiful, functional experiences that
-                  make a difference in people's lives.
+                  {portfolioData.about.mainText}
                 </p>
                 <p className="about-text text-sm md:text-lg leading-relaxed text-gray-600">
-                  With over 5 years of experience in digital design and development, I specialize in creating immersive
-                  web experiences that blend creativity with functionality.
+                  {portfolioData.about.secondaryText}
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-3 md:gap-4">
-                {[
-                  { title: "Design Strategy", icon: "🎨" },
-                  { title: "Web Development", icon: "💻" },
-                  { title: "Brand Identity", icon: "✨" },
-                  { title: "User Experience", icon: "🚀" },
-                ].map((service, index) => (
+                {portfolioData.about.services.map((service, index) => (
                   <div
                     key={index}
                     className="service-card bg-white/40 backdrop-blur-md rounded-xl md:rounded-2xl p-3 md:p-6 border-2 border-white/30"
@@ -969,10 +849,10 @@ export default function Portfolio() {
       <section ref={footerRef} className="footer-section min-h-screen flex items-center justify-center relative px-4">
         <div className="footer-container text-center max-w-4xl mx-auto">
           <h2 className="footer-title text-2xl sm:text-4xl md:text-6xl lg:text-8xl font-black mb-8 md:mb-12 text-white leading-tight px-4">
-            We built the rocket, they flew 🚀
+            {portfolioData.branding.tagline}
           </h2>
           <div className="flex justify-center space-x-4 md:space-x-8 mb-8 md:mb-12">
-            {["🌟", "✨", "🎨", "💫", "🔥"].map((icon, index) => (
+            {portfolioData.footer.icons.map((icon, index) => (
               <div key={index} className="floating-icon text-2xl md:text-4xl">
                 {icon}
               </div>
@@ -985,10 +865,13 @@ export default function Portfolio() {
               boxShadow: "0 20px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2)",
             }}
           >
-            <p className="text-base md:text-xl text-white/90 mb-4 md:mb-6">Ready to start your next project?</p>
-            <button className="bg-gradient-to-r from-[#FC8585] to-[#FFC86D] text-white px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold text-base md:text-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-              Let's Work Together
-            </button>
+            <p className="text-base md:text-xl text-white/90 mb-4 md:mb-6">{portfolioData.contact.subtitle}</p>
+            <a 
+              href={`mailto:${portfolioData.contact.email}`}
+              className="inline-block bg-gradient-to-r from-[#FC8585] to-[#FFC86D] text-white px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold text-base md:text-lg hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+            >
+              {portfolioData.contact.button}
+            </a>
           </div>
         </div>
       </section>
