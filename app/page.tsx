@@ -115,10 +115,10 @@ export default function Portfolio() {
         {
           y: 0,
           opacity: 1,
-          duration: 1.2,
-          ease: "power4.out",
+          duration: 1.5,
+          ease: "power3.out",
         },
-        "+=0.5",
+        "+=0.3",
       )
 
       // 4. Cards spread (adjusted for mobile)
@@ -181,11 +181,11 @@ export default function Portfolio() {
             }
           },
           z: (index) => (index === 6 ? 100 : 50 - Math.abs(index - 3)),
-          duration: 1.5,
-          ease: "elastic.out(1, 0.6)",
-          stagger: 0.05,
+          duration: 2.0,
+          ease: "power3.out",
+          stagger: 0.08,
         },
-        "+=0.3",
+        "+=0.1",
       )
 
       // 5. Title appears
@@ -597,7 +597,7 @@ export default function Portfolio() {
   }
 
   return (
-    <div className="min-h-screen overflow-x-hidden w-full">
+    <div className="scroll-container w-full">
       {/* Navigation */}
       <nav ref={navbarRef} className="navbar fixed top-0 left-0 right-0 z-50 p-4 md:p-6">
         <div className="flex justify-between items-center max-w-7xl mx-auto">
@@ -660,8 +660,9 @@ export default function Portfolio() {
 
       {/* Hero Section */}
       <section
+        id="home"
         ref={heroRef}
-        className="hero-section min-h-screen flex flex-col items-center justify-center relative px-4 pt-16 md:pt-20"
+        className="hero-section snap-section flex flex-col items-center justify-center relative px-4 pt-16 md:pt-20"
       >
         {/* Single Main Line */}
         <div className="absolute top-24 md:top-32 left-1/2 transform -translate-x-1/2 w-full max-w-4xl">
@@ -695,7 +696,7 @@ export default function Portfolio() {
                   alt={card.title}
                   width={150}
                   height={200}
-                  className="w-full h-full object-cover mix-blend-multiply"
+                  className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
                 <div className="absolute bottom-3 left-3 right-3 text-white">
@@ -722,7 +723,7 @@ export default function Portfolio() {
       </section>
 
       {/* Portfolio Section */}
-      <section ref={portfolioRef} className="portfolio-section min-h-screen py-12 md:py-16 lg:py-20 relative z-10">
+      <section id="projects" ref={portfolioRef} className="portfolio-section snap-section py-12 md:py-16 lg:py-20 relative z-10">
         <div className="max-w-7xl mx-auto px-4 md:px-6">
           {/* Portfolio Line */}
           <div className="flex justify-center mb-6 md:mb-8">
@@ -820,7 +821,7 @@ export default function Portfolio() {
       </section>
 
       {/* About Section */}
-      <section ref={aboutRef} className="about-section min-h-screen py-12 md:py-16 lg:py-20">
+      <section id="about" ref={aboutRef} className="about-section snap-section py-12 md:py-16 lg:py-20">
         <div className="about-container max-w-7xl mx-auto px-4 md:px-6">
           <div className="about-title text-center mb-12 md:mb-16">
             <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-800 mb-2 md:mb-4">{portfolioData.about.title}</h2>
@@ -870,7 +871,7 @@ export default function Portfolio() {
       </section>
 
       {/* Footer Section */}
-      <section ref={footerRef} className="footer-section min-h-screen flex items-center justify-center relative px-4">
+      <section id="contact" ref={footerRef} className="footer-section snap-section flex items-center justify-center relative px-4">
         <div className="footer-container text-center max-w-4xl mx-auto">
           <h2 className="footer-title text-2xl sm:text-4xl md:text-6xl lg:text-8xl font-black mb-8 md:mb-12 text-white leading-tight px-4">
             {portfolioData.branding.tagline}
