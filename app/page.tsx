@@ -7,7 +7,6 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { TextPlugin } from "gsap/TextPlugin"
 import Image from "next/image"
 import portfolioData from "../data/portfolio.json"
-import ProjectsSection from "../components/ProjectsSection"
 
 // Register GSAP plugins
 if (typeof window !== "undefined") {
@@ -18,6 +17,7 @@ export default function Portfolio() {
   const heroRef = useRef<HTMLDivElement>(null)
   const cardContainerRef = useRef<HTMLDivElement>(null)
   const titleRef = useRef<HTMLDivElement>(null)
+  const portfolioRef = useRef<HTMLDivElement>(null)
   const aboutRef = useRef<HTMLDivElement>(null)
   const footerRef = useRef<HTMLDivElement>(null)
   const navbarRef = useRef<HTMLDivElement>(null)
@@ -68,7 +68,10 @@ export default function Portfolio() {
       gsap.set(".description-text", { y: 20, opacity: 0 })
       gsap.set(".cta-button", { y: 20, opacity: 0 })
 
-
+      // Portfolio section setup - only animate elements, not containers
+      gsap.set(".portfolio-title", { y: 50, opacity: 0 })
+      gsap.set(".portfolio-card", { y: isMobile ? 100 : 200, opacity: 0, scale: 0.8, rotation: isMobile ? 0 : 15 })
+      gsap.set(".portfolio-line", { scaleX: 0, opacity: 0 })
 
       // About section setup - keep containers visible
       gsap.set(".about-title", { y: 50, opacity: 0 })
@@ -234,10 +237,10 @@ export default function Portfolio() {
       ScrollTrigger.scrollerProxy(".scroll-container", {
         scrollTop(value) {
           const container = document.querySelector('.scroll-container')
-          if (arguments.length && container) {
+          if (arguments.length && container && typeof value === 'number') {
             container.scrollTop = value
           }
-          return container?.scrollTop ?? 0
+          return container?.scrollTop || 0
         },
         getBoundingClientRect() {
           return {
@@ -332,7 +335,46 @@ export default function Portfolio() {
         },
       })
 
-
+      // Background color change for Portfolio section
+      ScrollTrigger.create({
+        trigger: portfolioRef.current,
+        start: "top 80%",
+        end: "bottom 20%",
+        scroller: ".scroll-container",
+        onEnter: () => {
+          console.log("🔵 Entering Portfolio - Blue Background")
+          console.log("Portfolio ScrollTrigger FIRED - onEnter")
+          gsap.to(document.body, {
+            backgroundColor: "#85CBD9",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onLeave: () => {
+          console.log("🟡 Leaving Portfolio - Yellow Background")
+          gsap.to(document.body, {
+            backgroundColor: "#FFC86D",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onEnterBack: () => {
+          console.log("🔵 Re-entering Portfolio - Blue Background")
+          gsap.to(document.body, {
+            backgroundColor: "#85CBD9",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+        onLeaveBack: () => {
+          console.log("⚪ Leaving Portfolio Back - White Background")
+          gsap.to(document.body, {
+            backgroundColor: "#ffffff",
+            duration: 0.6,
+            ease: "power2.out",
+          })
+        },
+      })
 
       // Background color change for About section
       ScrollTrigger.create({
@@ -432,13 +474,22 @@ export default function Portfolio() {
       })
 
       // Immediate visibility check - ensure all visible sections are shown
-      ScrollTrigger.batch([".about-section", ".footer-section"], {
+      ScrollTrigger.batch([".portfolio-section", ".about-section", ".footer-section"], {
         scroller: ".scroll-container",
         onEnter: (elements) => {
           elements.forEach((section) => {
             // Make sure section content is visible if it's in viewport
             const rect = section.getBoundingClientRect()
             if (rect.top < window.innerHeight && rect.bottom > 0) {
+              if (section.classList.contains("portfolio-section")) {
+                gsap.set([".portfolio-line", ".portfolio-title", ".portfolio-card"], {
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  rotation: 0,
+                  scaleX: 1
+                })
+              }
               if (section.classList.contains("about-section")) {
                 gsap.set([".about-title", ".about-image", ".about-text", ".service-card"], {
                   opacity: 1,
@@ -477,10 +528,19 @@ export default function Portfolio() {
       
       // Fallback: Force visibility of all sections after a short delay
       setTimeout(() => {
-        const sections = document.querySelectorAll('.about-section, .footer-section')
+        const sections = document.querySelectorAll('.portfolio-section, .about-section, .footer-section')
         sections.forEach((section) => {
           const rect = section.getBoundingClientRect()
           if (rect.top < window.innerHeight && rect.bottom > 0) {
+            if (section.classList.contains("portfolio-section")) {
+              gsap.set([".portfolio-line", ".portfolio-title", ".portfolio-card"], {
+                opacity: 1,
+                y: 0,
+                scale: 1,
+                rotation: 0,
+                scaleX: 1
+              })
+            }
             if (section.classList.contains("about-section")) {
               gsap.set([".about-title", ".about-image", ".about-text", ".service-card"], {
                 opacity: 1,
@@ -501,7 +561,58 @@ export default function Portfolio() {
         })
       }, 1000)
 
+      // Portfolio section animation - with reversible triggers
+      ScrollTrigger.create({
+        trigger: portfolioRef.current,
+        start: "top 95%", // Earlier trigger
+        end: "bottom 5%",
+        scroller: ".scroll-container",
+        onEnter: () => {
+          const portfolioTl = gsap.timeline()
 
+          portfolioTl.to(".portfolio-line", {
+            scaleX: 1,
+            opacity: 1,
+            duration: 0.8,
+            ease: "power2.out",
+          })
+
+          portfolioTl.to(
+            ".portfolio-title",
+            {
+              y: 0,
+              opacity: 1,
+              duration: 1,
+              ease: "power2.out",
+            },
+            "-=0.3",
+          )
+
+          portfolioTl.to(
+            ".portfolio-card",
+            {
+              y: 0,
+              opacity: 1,
+              scale: 1,
+              rotation: 0,
+              stagger: 0.15,
+              duration: 1.2,
+              ease: "elastic.out(1, 0.6)",
+            },
+            "-=0.5",
+          )
+        },
+        onEnterBack: () => {
+          // Ensure elements are visible when scrolling back up
+          gsap.set([".portfolio-line", ".portfolio-title", ".portfolio-card"], {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            rotation: 0,
+            scaleX: 1
+          })
+        },
+      })
 
       // About section animation - with reversible triggers
       ScrollTrigger.create({
@@ -625,7 +736,14 @@ export default function Portfolio() {
         },
       })
 
-
+      // Infinite scrolling animation for portfolio cards - optimized
+      gsap.to(".portfolio-cards-container", {
+        x: "-50%",
+        duration: isMobile ? 40 : 25, // Slower for better performance
+        ease: "none",
+        repeat: -1,
+        force3D: true, // Hardware acceleration
+      })
 
       // Continuous floating animations - optimized
       gsap.to(".floating-icon", {
@@ -825,8 +943,103 @@ export default function Portfolio() {
         </button>
       </section>
 
-      {/* Projects Section with Mouse Distortion Effect */}
-      <ProjectsSection />
+      {/* Portfolio Section */}
+      <section id="projects" ref={portfolioRef} className="portfolio-section snap-section flex flex-col justify-center relative z-10">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16 lg:py-20">
+          {/* Portfolio Line */}
+          <div className="flex justify-center mb-6 md:mb-8">
+            <div className="portfolio-line h-0.5 bg-white/30 w-full max-w-2xl origin-center"></div>
+          </div>
+
+          {/* Portfolio Title */}
+          <div className="portfolio-title text-center mb-12 md:mb-16">
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-800 mb-2 md:mb-4">Featured Projects</h2>
+            <p className="text-gray-800/80 text-base md:text-lg">Real-world applications built with modern technologies</p>
+          </div>
+
+          {/* Infinite Scrolling Cards Container */}
+          <div className="portfolio-cards-wrapper relative">
+            <div className="portfolio-cards-container flex gap-4 md:gap-8" style={{ width: "max-content" }}>
+              {/* First set of cards */}
+              {portfolioData.projects.map((item, index) => (
+                <div
+                  key={index}
+                  className={`portfolio-card bg-gradient-to-br ${item.bgColor} rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer shadow-xl flex-shrink-0 w-64 md:w-80 relative z-10`}
+                  style={{
+                    boxShadow: "0 15px 35px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2)",
+                  }}
+                  onMouseEnter={handleCardHover}
+                  onMouseLeave={handleCardLeave}
+                >
+                  <div className="overflow-hidden rounded-xl md:rounded-2xl mb-4 md:mb-6">
+                    <Image
+                      src={item.image || "/placeholder.svg"}
+                      alt={item.title}
+                      width={400}
+                      height={300}
+                      className="w-full h-36 md:h-48 object-cover transition-transform duration-500 hover:scale-110"
+                    />
+                  </div>
+                  <h3 className="text-lg md:text-2xl font-bold text-gray-800 mb-2 md:mb-3">{item.title}</h3>
+                  <p className="text-gray-800/90 leading-relaxed text-sm md:text-base mb-2">{item.description}</p>
+                  {item.tech && <div className="text-gray-800/70 text-xs md:text-sm font-medium mb-3">{item.tech}</div>}
+                  <div className="mt-3 md:mt-4 flex items-center text-gray-800 font-semibold text-sm md:text-base">
+                    <a href={item.demo || item.link} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                      <span>View Project</span>
+                      <svg
+                        className="w-3 h-3 md:w-4 md:h-4 ml-2 transition-transform group-hover:translate-x-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              ))}
+              {/* Duplicate set for seamless loop */}
+              {portfolioData.projects.map((item, index) => (
+                <div
+                  key={`duplicate-${index}`}
+                  className={`portfolio-card bg-gradient-to-br ${item.bgColor} rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer shadow-xl flex-shrink-0 w-64 md:w-80 relative z-10`}
+                  style={{
+                    boxShadow: "0 15px 35px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2)",
+                  }}
+                  onMouseEnter={handleCardHover}
+                  onMouseLeave={handleCardLeave}
+                >
+                  <div className="overflow-hidden rounded-xl md:rounded-2xl mb-4 md:mb-6">
+                    <Image
+                      src={item.image || "/placeholder.svg"}
+                      alt={item.title}
+                      width={400}
+                      height={300}
+                      className="w-full h-36 md:h-48 object-cover transition-transform duration-500 hover:scale-110"
+                    />
+                  </div>
+                  <h3 className="text-lg md:text-2xl font-bold text-gray-800 mb-2 md:mb-3">{item.title}</h3>
+                  <p className="text-gray-800/90 leading-relaxed text-sm md:text-base mb-2">{item.description}</p>
+                  {item.tech && <div className="text-gray-800/70 text-xs md:text-sm font-medium mb-3">{item.tech}</div>}
+                  <div className="mt-3 md:mt-4 flex items-center text-gray-800 font-semibold text-sm md:text-base">
+                    <a href={item.demo || item.link} target="_blank" rel="noopener noreferrer" className="flex items-center">
+                      <span>View Project</span>
+                      <svg
+                        className="w-3 h-3 md:w-4 md:h-4 ml-2 transition-transform group-hover:translate-x-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* About Section */}
       <section id="about" ref={aboutRef} className="about-section snap-section flex flex-col justify-center relative z-10">
