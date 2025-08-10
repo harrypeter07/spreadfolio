@@ -121,13 +121,13 @@ export default function Portfolio() {
         "-=0.3",
       )
 
-      // 3. Card container comes from bottom and cards spread simultaneously
+      // 3. Card container comes from bottom
       heroTl.to(
         ".card-container",
         {
           y: 0,
           opacity: 1,
-          duration: 1.2,
+          duration: 1.0,
           ease: "power2.out",
         },
         "+=0.3",
@@ -193,11 +193,11 @@ export default function Portfolio() {
             }
           },
           z: (index) => (index === 6 ? 100 : 50 - Math.abs(index - 3)),
-          duration: 1.2,
+          duration: 1.0,
           ease: "power2.out",
-          stagger: 0.08,
+          stagger: 0.06,
         },
-        "-=0.8", // Start spreading while container is still moving up
+        "+=0.1", // Start spreading after container is in position
       )
 
       // 5. Title appears
