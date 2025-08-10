@@ -23,44 +23,72 @@
     {
       "title": "Frontend",
       "tech": "React, Next.js",
+      "icon": "⚛️",
       "image": "https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=300&h=400&fit=crop",
       "bg": "#4F46E5"
     },
     {
       "title": "Backend", 
       "tech": "Node.js, APIs",
+      "icon": "🔧",
       "image": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=300&h=400&fit=crop",
       "bg": "#059669"
     },
     {
       "title": "UI/UX",
       "tech": "Figma, Design", 
+      "icon": "🎨",
       "image": "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=300&h=400&fit=crop",
       "bg": "#DC2626"
     },
     {
       "title": "Mobile",
       "tech": "React Native",
+      "icon": "📱",
       "image": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=300&h=400&fit=crop", 
       "bg": "#7C3AED"
     },
     {
       "title": "Animation",
       "tech": "GSAP, Framer",
+      "icon": "✨",
       "image": "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=300&h=400&fit=crop",
       "bg": "#EA580C"
     },
     {
       "title": "Full-Stack",
       "tech": "End-to-End",
+      "icon": "🚀",
       "image": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=400&fit=crop",
       "bg": "#0891B2"
     },
     {
       "title": "Open Source", 
       "tech": "GitHub, Community",
+      "icon": "🌟",
       "image": "https://images.unsplash.com/photo-1618477388954-7852f32655ec?w=300&h=400&fit=crop",
       "bg": "#65A30D"
+    },
+    {
+      "title": "TypeScript",
+      "tech": "Type Safety",
+      "icon": "📘",
+      "image": "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=300&h=400&fit=crop",
+      "bg": "#3178C6"
+    },
+    {
+      "title": "Tailwind CSS",
+      "tech": "Utility First",
+      "icon": "🎨",
+      "image": "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?w=300&h=400&fit=crop",
+      "bg": "#06B6D4"
+    },
+    {
+      "title": "Three.js",
+      "tech": "3D Graphics",
+      "icon": "🎮",
+      "image": "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=300&h=400&fit=crop",
+      "bg": "#000000"
     }
   ],
   "projects": [

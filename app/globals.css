@@ -15,6 +15,9 @@ html {
   height: 100%;
   scroll-behavior: smooth;
   overflow-x: hidden;
+  /* Enhanced smooth scrolling */
+  -webkit-overflow-scrolling: touch;
+  scroll-padding-top: 80px; /* Account for fixed navbar */
 }
 
 body {
@@ -29,6 +32,20 @@ body {
   transition: background-color 0.4s ease-out; /* Smooth native CSS transition */
   transform: translateZ(0); /* Force hardware acceleration */
   will-change: background-color; /* Optimize for color changes */
+  /* Enhanced smooth scrolling */
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* Enhanced smooth scrolling for all scrollable elements */
+* {
+  scroll-behavior: smooth;
+}
+
+/* Smooth scrolling for specific elements */
+html, body, .scroll-container, .snap-section {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Background texture overlay - optimized for performance */
@@ -50,7 +67,7 @@ body::before {
   transform: translateZ(0); /* Force hardware acceleration */
 }
 
-/* Scroll Snap Container - Optimized */
+/* Scroll Snap Container - Enhanced Smooth Scrolling */
 .scroll-container {
   height: 100vh;
   overflow-y: auto;
@@ -61,13 +78,21 @@ body::before {
   transform: translateZ(0); /* Force hardware acceleration */
   -webkit-overflow-scrolling: touch; /* Smooth iOS scrolling */
   contain: layout style paint; /* CSS containment for performance */
+  /* Enhanced smooth scrolling */
+  scroll-padding-top: 80px;
+  scroll-padding-bottom: 20px;
+  /* Momentum scrolling */
+  -webkit-overflow-scrolling: touch;
+  /* Reduce scroll jank */
+  overscroll-behavior: smooth;
+  overscroll-behavior-y: contain;
 }
 
 .scroll-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari and Opera */
 }
 
-/* Section Scroll Snap - Performance Optimized with no gaps */
+/* Section Scroll Snap - Enhanced Smooth Scrolling */
 .snap-section {
   min-height: 100vh;
   height: 100vh; /* Force exact height to prevent gaps */
@@ -84,22 +109,71 @@ body::before {
   will-change: transform; /* Optimize for animations */
   margin: 0; /* Remove any margins */
   padding: 0; /* Remove any padding */
+  /* Enhanced smooth scrolling */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Enhanced smooth scrolling for navigation links */
 .navbar-link {
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* Smooth scrolling for mobile */
+/* Smooth scrolling for mobile - Enhanced */
 @media (max-width: 768px) {
   .scroll-container {
     scroll-snap-type: y proximity; /* Less strict snapping on mobile */
+    /* Enhanced mobile smooth scrolling */
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    overscroll-behavior: smooth;
   }
   
   .snap-section {
     scroll-snap-stop: normal; /* Allow smoother scrolling on mobile */
+    /* Enhanced mobile smooth scrolling */
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
   }
+  
+  /* Mobile momentum scrolling */
+  html, body {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+}
+
+/* Enhanced smooth scrolling for all interactive elements */
+a, button, .portfolio-card, .about-image-container {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Smooth scrolling for anchor links */
+a[href^="#"] {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Enhanced smooth scrolling for portfolio cards */
+.portfolio-card {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Smooth transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for about section */
+.about-section {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Enhanced smooth scrolling for footer section */
+.footer-section {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* Hide any additional scrollbars from GSAP markers */
@@ -633,4 +707,181 @@ section {
 }
 .mobile-menu-item:nth-child(4) {
   transition-delay: 0.4s;
+}
+
+/* Enhanced Smooth Scrolling - Additional Properties */
+/* Momentum scrolling for better feel */
+html, body {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Reduce scroll jank */
+  overscroll-behavior: smooth;
+  overscroll-behavior-y: contain;
+  /* Smooth scrolling for all elements */
+  scroll-behavior: smooth;
+}
+
+/* Enhanced smooth scrolling for all sections */
+section {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Reduce scroll jank */
+  overscroll-behavior: smooth;
+}
+
+/* Smooth scrolling for card interactions */
+.hero-card, .portfolio-card, .about-image-container {
+  /* Enhanced smooth transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Smooth scrolling */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Enhanced smooth scrolling for navigation */
+.navbar, .mobile-menu {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Smooth scrolling for mobile menu items */
+.mobile-menu-item {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Enhanced transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for buttons */
+button, .btn {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Smooth transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for links */
+a {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Smooth transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for images */
+img {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Smooth transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for floating elements */
+.floating-icon, .floating-pill {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Smooth animations */
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for service cards */
+.service-card {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Smooth transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for footer cards */
+.footer-card {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Smooth transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for hamburger menu */
+.hamburger span {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Smooth transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for text elements */
+h1, h2, h3, h4, h5, h6, p, span {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Enhanced smooth scrolling for form elements */
+input, textarea, select {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Smooth transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for scrollbar */
+::-webkit-scrollbar-thumb {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Smooth transitions */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for GSAP animations */
+.gsap-marker-scroller-start,
+.gsap-marker-scroller-end,
+.gsap-marker-start,
+.gsap-marker-end {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Enhanced smooth scrolling for loading states */
+.loading, .loaded {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Smooth transitions */
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for card stack */
+.card-stack {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Smooth 3D transforms */
+  transform-style: preserve-3d;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for glass morphism effects */
+.glass {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Smooth backdrop filter */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced smooth scrolling for mobile menu animations */
+.mobile-menu-item:nth-child(1) {
+  transition-delay: 0.1s;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+.mobile-menu-item:nth-child(2) {
+  transition-delay: 0.2s;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+.mobile-menu-item:nth-child(3) {
+  transition-delay: 0.3s;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+.mobile-menu-item:nth-child(4) {
+  transition-delay: 0.4s;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
 }
