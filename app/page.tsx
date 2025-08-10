@@ -132,52 +132,71 @@ export default function Portfolio() {
         "+=0.3",
       )
 
-      // 4. Cards spread (smooth and non-glitchy)
+      // 4. Cards spread (restored original smooth animation)
       heroTl.to(
         ".hero-card",
         {
           x: (index) => {
             if (index === 6) return 0 // Center card stays at center
             if (isMobile) {
-              // Smooth mobile spacing
-              const positions = [-120, -80, -40, 40, 80, 120, 0]
-              return positions[index] || 0
+              // Better spaced mobile layout
+              if (index === 0) return -180
+              if (index === 1) return -120
+              if (index === 2) return -60
+              if (index === 3) return 60
+              if (index === 4) return 120
+              if (index === 5) return 180
+              return 0 // Center card (index 6)
             } else {
-              // Smooth desktop spacing
-              const positions = [-300, -180, -90, 90, 180, 300, 0]
-              return positions[index] || 0
+              // Improved desktop spacing for rainbow effect
+              if (index === 0) return -520
+              if (index === 1) return -320
+              if (index === 2) return -200
+              if (index === 3) return 200
+              if (index === 4) return 320
+              if (index === 5) return 520
+              return 0 // Center card (index 6)
             }
           },
           rotation: (index) => {
-            if (index === 6) return 0 // Center card no rotation
+            if (index === 6) return 0
             if (isMobile) {
-              // Minimal mobile rotations
-              const rotations = [-2, 2, -1, 1, -2, 2, 0]
+              // Very subtle rotations for mobile
+              const rotations = [-1, 1, -3, 3, -4, 2, 0]
               return rotations[index] || 0
             } else {
-              // Subtle desktop rotations
-              const rotations = [-3, 3, -1, 1, -3, 3, 0]
-              return rotations[index] || 0
+              // Reduced desktop rotations
+              if (index === 0) return -2
+              if (index === 1) return 2
+              if (index === 2) return -6
+              if (index === 3) return 6
+              if (index === 4) return -8
+              if (index === 5) return 4
+              return 0
             }
           },
           y: (index) => {
             if (index === 6) return 0 // Center card at normal height
             if (isMobile) {
-              // Subtle mobile arc
-              const heights = [20, 10, 5, 5, 10, 20, 0]
-              return heights[index] || 0
+              // Subtle rainbow arc for mobile
+              if (index === 0 || index === 5) return 40 // Outermost cards lowest
+              if (index === 1 || index === 4) return 20 // Middle cards slightly down
+              if (index === 2 || index === 3) return 10 // Inner cards slightly down
+              return 0
             } else {
-              // Gentle desktop arc
-              const heights = [30, 15, 8, 8, 15, 30, 0]
-              return heights[index] || 0
+              // More pronounced rainbow arc for desktop
+              if (index === 0 || index === 5) return 60 // Outermost cards lowest
+              if (index === 1 || index === 4) return 30 // Middle cards moderately down
+              if (index === 2 || index === 3) return 15 // Inner cards slightly down
+              return 0
             }
           },
           z: (index) => (index === 6 ? 100 : 50 - Math.abs(index - 3)),
-          duration: 1.5,
-          ease: "power2.out",
-          stagger: 0.1,
+          duration: 1.2,
+          ease: "back.out(1.4)",
+          stagger: 0.06,
         },
-        "+=0.2",
+        "+=0.1",
       )
 
       // 5. Title appears
@@ -265,7 +284,6 @@ export default function Portfolio() {
               duration: 0.3,
               ease: "power2.out",
             })
-          } else if (currentScrollY < lastScrollY) {
           } else if (currentScrollY < lastScrollY) {
             // Scrolling up - show navbar
             gsap.to(navbarRef.current, {
