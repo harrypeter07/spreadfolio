@@ -1,191 +1,153 @@
 'use client'
-import React, { useEffect, useState } from 'react'
-import { Canvas } from '@react-three/fiber'
-import { motion } from "framer-motion-3d"
-import { animate, useMotionValue, useTransform } from 'framer-motion'
-import { useTexture, useAspect } from '@react-three/drei'
+import React, { useEffect, useState, useRef } from 'react'
 import Image from 'next/image'
 import portfolioData from '../data/portfolio.json'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
-// Shader code for the distortion effect
-const vertex = `
-varying vec2 vUv;
-uniform vec2 uDelta;
-uniform float uAmplitude;
-float PI = 3.141592653589793238;
-
-void main() {
-    vUv = uv;
-    vec3 newPosition = position;
-    newPosition.x += sin(uv.y * PI) * uDelta.x * uAmplitude;
-    newPosition.y += sin(uv.x * PI) * uDelta.y * uAmplitude;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPosition, 1.0);
-}
-`
-
-const fragment = `
-varying vec2 vUv;
-uniform sampler2D uTexture;
-uniform float uAlpha;
-void main() {
-    vec3 texture = texture2D(uTexture, vUv).rgb;
-    gl_FragColor = vec4(texture, uAlpha);
-}
-`
-
-// 3D Model component for the distortion effect
-function DistortionModel({ activeProject, projects }: { activeProject: number | null, projects: any[] }) {
-  const plane = React.useRef<any>()
-  const { viewport } = useThree()
-  const mouse = useMouse()
-  const opacity = useMotionValue(0)
-  const textures = projects.map(project => useTexture(project.image))
-  const { width, height } = textures[0]?.image || { width: 1, height: 1 }
-  const lerp = (x: number, y: number, a: number) => x * (1 - a) + y * a
-
-  const scale = useAspect(width, height, 0.225)
-  const smoothMouse = {
-    x: useMotionValue(0),
-    y: useMotionValue(0)
-  }
-
-  useEffect(() => {
-    if (activeProject !== null) {
-      plane.current.material.uniforms.uTexture.value = textures[activeProject]
-      animate(opacity, 1, { 
-        duration: 0.2, 
-        onUpdate: (latest) => plane.current.material.uniforms.uAlpha.value = latest 
-      })
-    } else {
-      animate(opacity, 0, { 
-        duration: 0.2, 
-        onUpdate: (latest) => plane.current.material.uniforms.uAlpha.value = latest 
-      })
-    }
-  }, [activeProject, textures, opacity])
-
-  const uniforms = React.useRef({
-    uDelta: { value: { x: 0, y: 0 } },
-    uAmplitude: { value: 0.0005 },
-    uTexture: { value: textures[0] },
-    uAlpha: { value: 0 }
-  })
-
-  useFrame(() => {
-    const { x, y } = mouse
-    const smoothX = smoothMouse.x.get()
-    const smoothY = smoothMouse.y.get()
-
-    if (Math.abs(x - smoothX) > 1) {
-      smoothMouse.x.set(lerp(smoothX, x, 0.1))
-      smoothMouse.y.set(lerp(smoothY, y, 0.1))
-      if (plane.current?.material?.uniforms) {
-        plane.current.material.uniforms.uDelta.value = {
-          x: x - smoothX,
-          y: -1 * (y - smoothY)
-        }
-      }
-    }
-  })
-
-  const x = useTransform(smoothMouse.x, [0, window.innerWidth], [-1 * viewport.width / 2, viewport.width / 2])
-  const y = useTransform(smoothMouse.y, [0, window.innerHeight], [viewport.height / 2, -1 * viewport.height / 2])
-
-  return (
-    <motion.mesh position-x={x} position-y={y} ref={plane} scale={scale}>
-      <planeGeometry args={[1, 1, 15, 15]} />
-      <shaderMaterial
-        vertexShader={vertex}
-        fragmentShader={fragment}
-        uniforms={uniforms.current}
-        transparent={true}
-      />
-    </motion.mesh>
-  )
-}
-
-// Custom hooks
-function useMouse() {
-  const [mouse, setMouse] = useState({ x: 0, y: 0 })
-
-  useEffect(() => {
-    const mouseMove = (e: MouseEvent) => {
-      const { clientX, clientY } = e
-      setMouse({
-        x: clientX,
-        y: clientY
-      })
-    }
-
-    window.addEventListener("mousemove", mouseMove)
-    return () => window.removeEventListener("mousemove", mouseMove)
-  }, [])
-
-  return mouse
-}
-
-function useThree() {
-  const [viewport, setViewport] = useState({ width: 1, height: 1 })
-
-  useEffect(() => {
-    const updateViewport = () => {
-      setViewport({
-        width: window.innerWidth,
-        height: window.innerHeight
-      })
-    }
-
-    updateViewport()
-    window.addEventListener('resize', updateViewport)
-    return () => window.removeEventListener('resize', updateViewport)
-  }, [])
-
-  return { viewport }
-}
-
-function useFrame(callback: () => void) {
-  useEffect(() => {
-    let animationId: number
-
-    const animate = () => {
-      callback()
-      animationId = requestAnimationFrame(animate)
-    }
-
-    animate()
-    return () => cancelAnimationFrame(animationId)
-  }, [callback])
+// Register GSAP plugins
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger)
 }
 
 export default function ProjectsSection() {
   const [activeProject, setActiveProject] = useState<number | null>(null)
+  const sectionRef = useRef<HTMLElement>(null)
+  const canvasRef = useRef<HTMLDivElement>(null)
+  const imageRef = useRef<HTMLImageElement>(null)
+  const projectsRef = useRef<HTMLUListElement>(null)
+
+  useEffect(() => {
+    // GSAP animations for the projects section
+    const ctx = gsap.context(() => {
+      // Animate the title
+      gsap.fromTo('.projects-title', 
+        { y: 100, opacity: 0 },
+        { 
+          y: 0, 
+          opacity: 1, 
+          duration: 1.2, 
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: "top 80%",
+            end: "bottom 20%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      )
+
+      // Animate project items
+      gsap.fromTo('.project-item', 
+        { x: -100, opacity: 0 },
+        { 
+          x: 0, 
+          opacity: 1, 
+          duration: 0.8, 
+          stagger: 0.2,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: projectsRef.current,
+            start: "top 80%",
+            end: "bottom 20%",
+            toggleActions: "play none none reverse"
+          }
+        }
+      )
+
+      // Parallax effect for the background canvas
+      gsap.to(canvasRef.current, {
+        yPercent: -20,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true
+        }
+      })
+    }, sectionRef)
+
+    return () => ctx.revert()
+  }, [])
+
+  // GSAP hover effect for project images
+  const handleProjectHover = (index: number, project: any) => {
+    setActiveProject(index)
+    
+    if (imageRef.current) {
+      gsap.to(imageRef.current, {
+        opacity: 1,
+        scale: 1.05,
+        duration: 0.4,
+        ease: "power2.out"
+      })
+      
+      // Update image source
+      imageRef.current.src = project.image
+    }
+  }
+
+  const handleProjectLeave = () => {
+    setActiveProject(null)
+    
+    if (imageRef.current) {
+      gsap.to(imageRef.current, {
+        opacity: 0,
+        scale: 1,
+        duration: 0.4,
+        ease: "power2.out"
+      })
+    }
+  }
 
   return (
     <>
-      <section className="relative h-screen w-full overflow-hidden">
-        {/* 3D Canvas with distortion effect */}
-        <div className="fixed top-0 left-0 w-full h-full z-0">
-          <Canvas>
-            <DistortionModel activeProject={activeProject} projects={portfolioData.projects} />
-          </Canvas>
+      <section ref={sectionRef} className="relative h-screen w-full overflow-hidden">
+        {/* Background canvas with GSAP parallax */}
+        <div ref={canvasRef} className="fixed top-0 left-0 w-full h-full z-0">
+          <div className="w-full h-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900">
+            {/* Animated background pattern */}
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute inset-0 animate-pulse" style={{
+                backgroundImage: `radial-gradient(circle at 25% 25%, #60A5FA 2px, transparent 2px), radial-gradient(circle at 75% 75%, #A78BFA 2px, transparent 2px)`,
+                backgroundSize: '100px 100px'
+              }}></div>
+            </div>
+            
+            {/* Floating project image */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <img
+                ref={imageRef}
+                src={portfolioData.projects[0]?.image || ''}
+                alt="Project Preview"
+                className="w-96 h-96 object-cover rounded-2xl shadow-2xl opacity-0 transition-all duration-500"
+                style={{
+                  filter: 'brightness(0.8) contrast(1.2) saturate(1.1)',
+                  transform: 'perspective(1000px) rotateY(5deg) rotateX(5deg)'
+                }}
+              />
+            </div>
+          </div>
         </div>
 
         {/* Projects list overlay */}
         <div className="relative z-10 mix-blend-difference text-white h-full w-full flex items-center justify-center">
           <div className="max-w-4xl mx-auto px-4">
-            <h2 className="text-4xl md:text-6xl lg:text-8xl font-black text-center mb-16">
+            <h2 className="projects-title text-4xl md:text-6xl lg:text-8xl font-black text-center mb-16">
               Featured Projects
             </h2>
             
             <ul 
-              onMouseLeave={() => setActiveProject(null)} 
+              ref={projectsRef}
+              onMouseLeave={handleProjectLeave} 
               className="space-y-8"
             >
               {portfolioData.projects.map((project, index) => (
                 <li 
                   key={project.title}
-                  onMouseOver={() => setActiveProject(index)}
-                  className="group cursor-pointer"
+                  onMouseOver={() => handleProjectHover(index, project)}
+                  className="project-item group cursor-pointer"
                 >
                   <div className="flex items-center justify-between p-6 border-t border-white/20 hover:border-white/40 transition-colors duration-300">
                     <div className="flex-1">
@@ -286,7 +248,7 @@ export default function ProjectsSection() {
   )
 }
 
-// Tech Stack Row Component with Parallax Effect
+// Tech Stack Row Component with GSAP Parallax Effect
 function TechStackRow({ skills, direction, speed, className, opacity }: { 
   skills: any[], 
   direction: 'left' | 'right', 
@@ -294,26 +256,42 @@ function TechStackRow({ skills, direction, speed, className, opacity }: {
   className: string,
   opacity: number
 }) {
-  const [scrollY, setScrollY] = useState(0)
+  const rowRef = useRef<HTMLDivElement>(null)
   
   useEffect(() => {
-    const handleScroll = () => {
-      setScrollY(window.scrollY)
-    }
+    if (!rowRef.current) return
     
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
-  
-  const translateX = direction === 'left' 
-    ? -scrollY * speed 
-    : scrollY * speed
+    const row = rowRef.current
+    
+    // GSAP ScrollTrigger for parallax effect
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: row,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: true,
+        onUpdate: (self) => {
+          const progress = self.progress
+          const translateX = direction === 'left' 
+            ? -progress * speed * 1000
+            : progress * speed * 1000
+          
+          gsap.set(row, { x: translateX })
+        }
+      }
+    })
+    
+    return () => {
+      tl.kill()
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill())
+    }
+  }, [direction, speed])
   
   return (
-    <motion.div 
+    <div 
+      ref={rowRef}
       className={`flex gap-8 md:gap-12 lg:gap-16 ${className}`}
       style={{ 
-        transform: `translateX(${translateX}px)`,
         willChange: 'transform',
         opacity: opacity
       }}
@@ -340,6 +318,6 @@ function TechStackRow({ skills, direction, speed, className, opacity }: {
           </div>
         </div>
       ))}
-    </motion.div>
+    </div>
   )
 }
