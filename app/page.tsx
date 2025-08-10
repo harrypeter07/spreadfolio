@@ -7,7 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { TextPlugin } from "gsap/TextPlugin"
 import Image from "next/image"
 import portfolioData from "../data/portfolio.json"
-
+import TextParallax from "@/components/TextPar"
 // Register GSAP plugins
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger, TextPlugin)
@@ -63,7 +63,14 @@ export default function Portfolio() {
       gsap.set(".navbar-link", { y: -30, opacity: 0 })
       gsap.set(".main-line", { scaleX: 0, opacity: 0 })
       gsap.set(".card-container", { y: isMobile ? 300 : 500, opacity: 0 })
-      gsap.set(".hero-card", { x: 0, rotation: 0, z: (index) => (index === 6 ? 100 : 50 - index) })
+      gsap.set(".hero-card", { 
+        x: 0, 
+        y: 0, 
+        rotation: 0, 
+        z: (index) => (index === 6 ? 100 : 50 - index),
+        opacity: 1,
+        scale: 1
+      })
       gsap.set(".main-title", { y: 50, opacity: 0 })
       gsap.set(".description-text", { y: 20, opacity: 0 })
       gsap.set(".cta-button", { y: 20, opacity: 0 })
@@ -125,71 +132,52 @@ export default function Portfolio() {
         "+=0.3",
       )
 
-      // 4. Cards spread (adjusted for mobile)
+      // 4. Cards spread (smooth and non-glitchy)
       heroTl.to(
         ".hero-card",
         {
           x: (index) => {
             if (index === 6) return 0 // Center card stays at center
             if (isMobile) {
-              // Better spaced mobile layout
-              if (index === 0) return -180
-              if (index === 1) return -120
-              if (index === 2) return -60
-              if (index === 3) return 60
-              if (index === 4) return 120
-              if (index === 5) return 180
-              return 0 // Center card (index 6)
+              // Smooth mobile spacing
+              const positions = [-120, -80, -40, 40, 80, 120, 0]
+              return positions[index] || 0
             } else {
-              // Improved desktop spacing for rainbow effect
-              if (index === 0) return -520
-              if (index === 1) return -320
-              if (index === 2) return -200
-              if (index === 3) return 200
-              if (index === 4) return 320
-              if (index === 5) return 520
-              return 0 // Center card (index 6)
+              // Smooth desktop spacing
+              const positions = [-300, -180, -90, 90, 180, 300, 0]
+              return positions[index] || 0
             }
           },
           rotation: (index) => {
-            if (index === 6) return 0
+            if (index === 6) return 0 // Center card no rotation
             if (isMobile) {
-              // Very subtle rotations for mobile
-              const rotations = [-1, 1, -3, 3, -4, 2, 0]
+              // Minimal mobile rotations
+              const rotations = [-2, 2, -1, 1, -2, 2, 0]
               return rotations[index] || 0
             } else {
-              // Reduced desktop rotations
-              if (index === 0) return -2
-              if (index === 1) return 2
-              if (index === 2) return -6
-              if (index === 3) return 6
-              if (index === 4) return -8
-              if (index === 5) return 4
-              return 0
+              // Subtle desktop rotations
+              const rotations = [-3, 3, -1, 1, -3, 3, 0]
+              return rotations[index] || 0
             }
           },
           y: (index) => {
             if (index === 6) return 0 // Center card at normal height
             if (isMobile) {
-              // Subtle rainbow arc for mobile
-              if (index === 0 || index === 5) return 40 // Outermost cards lowest
-              if (index === 1 || index === 4) return 20 // Middle cards slightly down
-              if (index === 2 || index === 3) return 10 // Inner cards slightly down
-              return 0
+              // Subtle mobile arc
+              const heights = [20, 10, 5, 5, 10, 20, 0]
+              return heights[index] || 0
             } else {
-              // More pronounced rainbow arc for desktop
-              if (index === 0 || index === 5) return 60 // Outermost cards lowest
-              if (index === 1 || index === 4) return 30 // Middle cards moderately down
-              if (index === 2 || index === 3) return 15 // Inner cards slightly down
-              return 0
+              // Gentle desktop arc
+              const heights = [30, 15, 8, 8, 15, 30, 0]
+              return heights[index] || 0
             }
           },
           z: (index) => (index === 6 ? 100 : 50 - Math.abs(index - 3)),
-          duration: 1.2,
-          ease: "back.out(1.4)",
-          stagger: 0.06,
+          duration: 1.5,
+          ease: "power2.out",
+          stagger: 0.1,
         },
-        "+=0.1",
+        "+=0.2",
       )
 
       // 5. Title appears
@@ -473,44 +461,31 @@ export default function Portfolio() {
         },
       })
 
-      // Immediate visibility check - ensure all visible sections are shown
-      ScrollTrigger.batch([".portfolio-section", ".about-section", ".footer-section"], {
+
+
+      // Simple animations for About section elements when they come into view
+      ScrollTrigger.create({
+        trigger: aboutRef.current,
+        start: "top 80%",
         scroller: ".scroll-container",
-        onEnter: (elements) => {
-          elements.forEach((section) => {
-            // Make sure section content is visible if it's in viewport
-            const rect = section.getBoundingClientRect()
-            if (rect.top < window.innerHeight && rect.bottom > 0) {
-              if (section.classList.contains("portfolio-section")) {
-                gsap.set([".portfolio-line", ".portfolio-title", ".portfolio-card"], {
-                  opacity: 1,
-                  y: 0,
-                  scale: 1,
-                  rotation: 0,
-                  scaleX: 1
-                })
-              }
-              if (section.classList.contains("about-section")) {
-                gsap.set([".about-title", ".about-image", ".about-text", ".service-card"], {
-                  opacity: 1,
-                  x: 0,
-                  y: 0,
-                  scale: 1,
-                  rotation: 0
-                })
-              }
-              if (section.classList.contains("footer-section")) {
-                gsap.set([".footer-title", ".floating-icon", ".footer-card"], {
-                  opacity: 1,
-                  y: 0,
-                  scale: 1
-                })
-              }
-            }
-          })
-        },
-        start: "top bottom",
-        end: "bottom top",
+        onEnter: () => {
+          gsap.to(".about-title", { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" })
+          gsap.to(".about-image", { x: 0, y: 0, opacity: 1, rotation: 0, duration: 1, ease: "power2.out", delay: 0.2 })
+          gsap.to(".about-text", { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.4 })
+          gsap.to(".service-card", { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power2.out", stagger: 0.1, delay: 0.6 })
+        }
+      })
+
+      // Simple animations for Footer section elements when they come into view
+      ScrollTrigger.create({
+        trigger: footerRef.current,
+        start: "top 80%",
+        scroller: ".scroll-container",
+        onEnter: () => {
+          gsap.to(".footer-title", { y: 0, opacity: 1, duration: 0.8, ease: "power2.out" })
+          gsap.to(".floating-icon", { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: "power2.out", stagger: 0.1, delay: 0.2 })
+          gsap.to(".footer-card", { y: 0, opacity: 1, duration: 0.8, ease: "power2.out", delay: 0.4 })
+        }
       })
 
       // Refresh ScrollTrigger after a short delay to ensure proper setup
@@ -526,235 +501,15 @@ export default function Portfolio() {
         console.log("Scroll container scroll top:", scrollContainer?.scrollTop)
       }, 500)
       
-      // Fallback: Force visibility of all sections after a short delay
-      setTimeout(() => {
-        const sections = document.querySelectorAll('.portfolio-section, .about-section, .footer-section')
-        sections.forEach((section) => {
-          const rect = section.getBoundingClientRect()
-          if (rect.top < window.innerHeight && rect.bottom > 0) {
-            if (section.classList.contains("portfolio-section")) {
-              gsap.set([".portfolio-line", ".portfolio-title", ".portfolio-card"], {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                rotation: 0,
-                scaleX: 1
-              })
-            }
-            if (section.classList.contains("about-section")) {
-              gsap.set([".about-title", ".about-image", ".about-text", ".service-card"], {
-                opacity: 1,
-                x: 0,
-                y: 0,
-                scale: 1,
-                rotation: 0
-              })
-            }
-            if (section.classList.contains("footer-section")) {
-              gsap.set([".footer-title", ".floating-icon", ".footer-card"], {
-                opacity: 1,
-                y: 0,
-                scale: 1
-              })
-            }
-          }
-        })
-      }, 1000)
 
-      // Portfolio section animation - with reversible triggers
-      ScrollTrigger.create({
-        trigger: portfolioRef.current,
-        start: "top 95%", // Earlier trigger
-        end: "bottom 5%",
-        scroller: ".scroll-container",
-        onEnter: () => {
-          const portfolioTl = gsap.timeline()
 
-          portfolioTl.to(".portfolio-line", {
-            scaleX: 1,
-            opacity: 1,
-            duration: 0.8,
-            ease: "power2.out",
-          })
 
-          portfolioTl.to(
-            ".portfolio-title",
-            {
-              y: 0,
-              opacity: 1,
-              duration: 1,
-              ease: "power2.out",
-            },
-            "-=0.3",
-          )
 
-          portfolioTl.to(
-            ".portfolio-card",
-            {
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              rotation: 0,
-              stagger: 0.15,
-              duration: 1.2,
-              ease: "elastic.out(1, 0.6)",
-            },
-            "-=0.5",
-          )
-        },
-        onEnterBack: () => {
-          // Ensure elements are visible when scrolling back up
-          gsap.set([".portfolio-line", ".portfolio-title", ".portfolio-card"], {
-            opacity: 1,
-            y: 0,
-            scale: 1,
-            rotation: 0,
-            scaleX: 1
-          })
-        },
-      })
 
-      // About section animation - with reversible triggers
-      ScrollTrigger.create({
-        trigger: aboutRef.current,
-        start: "top 95%", // Earlier trigger
-        end: "bottom 5%",
-        scroller: ".scroll-container",
-        onEnter: () => {
-          const aboutTl = gsap.timeline()
 
-          aboutTl.to(
-            ".about-title",
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.8,
-              ease: "power2.out",
-            },
-          )
 
-          aboutTl.to(
-            ".about-image",
-            {
-              x: 0,
-              y: 0,
-              opacity: 1,
-              rotation: 0,
-              duration: 1,
-              ease: "power2.out",
-            },
-            "-=0.5",
-          )
 
-          aboutTl.to(
-            ".about-text",
-            {
-              y: 0,
-              opacity: 1,
-              stagger: 0.1,
-              duration: 0.8,
-              ease: "power2.out",
-            },
-            "-=0.3",
-          )
 
-          aboutTl.to(
-            ".service-card",
-            {
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              stagger: 0.1,
-              duration: 0.8,
-              ease: "back.out(1.7)",
-            },
-            "-=0.4",
-          )
-        },
-        onEnterBack: () => {
-          // Ensure elements are visible when scrolling back up
-          gsap.set([".about-title", ".about-image", ".about-text", ".service-card"], {
-            opacity: 1,
-            x: 0,
-            y: 0,
-            scale: 1,
-            rotation: 0
-          })
-        },
-      })
-
-      // Footer section animation - with reversible triggers
-      ScrollTrigger.create({
-        trigger: footerRef.current,
-        start: "top 95%", // Earlier trigger
-        end: "bottom 5%",
-        scroller: ".scroll-container",
-        onEnter: () => {
-          const footerTl = gsap.timeline()
-
-          footerTl.to(
-            ".footer-title",
-            {
-              y: 0,
-              opacity: 1,
-              duration: 1,
-              ease: "power2.out",
-            },
-          )
-
-          footerTl.to(
-            ".floating-icon",
-            {
-              y: 0,
-              opacity: 1,
-              scale: 1,
-              stagger: 0.1,
-              duration: 0.8,
-              ease: "elastic.out(1, 0.6)",
-            },
-            "-=0.5",
-          )
-
-          footerTl.to(
-            ".footer-card",
-            {
-              y: 0,
-              opacity: 1,
-              duration: 0.8,
-              ease: "power2.out",
-            },
-            "-=0.3",
-          )
-        },
-        onEnterBack: () => {
-          // Ensure elements are visible when scrolling back up
-          gsap.set([".footer-title", ".floating-icon", ".footer-card"], {
-            opacity: 1,
-            y: 0,
-            scale: 1
-          })
-        },
-      })
-
-      // Infinite scrolling animation for portfolio cards - optimized
-      gsap.to(".portfolio-cards-container", {
-        x: "-50%",
-        duration: isMobile ? 40 : 25, // Slower for better performance
-        ease: "none",
-        repeat: -1,
-        force3D: true, // Hardware acceleration
-      })
-
-      // Continuous floating animations - optimized
-      gsap.to(".floating-icon", {
-        y: -15,
-        repeat: -1,
-        yoyo: true,
-        duration: 3, // Slower for better performance
-        ease: "sine.inOut",
-        stagger: 0.5,
-        force3D: true, // Hardware acceleration
-      })
     })
 
     return () => {
@@ -944,109 +699,54 @@ export default function Portfolio() {
       </section>
 
       {/* Portfolio Section */}
-      <section id="projects" ref={portfolioRef} className="portfolio-section snap-section flex flex-col justify-center relative z-10">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16 lg:py-20">
-          {/* Portfolio Line */}
-          <div className="flex justify-center mb-6 md:mb-8">
-            <div className="portfolio-line h-0.5 bg-white/30 w-full max-w-2xl origin-center"></div>
+      <section 
+        id="portfolio" 
+        ref={portfolioRef} 
+        className="portfolio-section snap-section flex flex-col justify-center relative z-10 min-h-screen"
+      >
+        <div className="portfolio-container w-full">
+          <div className="portfolio-title text-center mb-12 md:mb-16 px-4">
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-800 mb-2 md:mb-4">
+              My Portfolio
+            </h2>
+            <p className="text-gray-600 text-base md:text-lg">
+              Explore my creative work and projects
+            </p>
           </div>
-
-          {/* Portfolio Title */}
-          <div className="portfolio-title text-center mb-12 md:mb-16">
-            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-800 mb-2 md:mb-4">Featured Projects</h2>
-            <p className="text-gray-800/80 text-base md:text-lg">Real-world applications built with modern technologies</p>
-          </div>
-
-          {/* Infinite Scrolling Cards Container */}
-          <div className="portfolio-cards-wrapper relative">
-            <div className="portfolio-cards-container flex gap-4 md:gap-8" style={{ width: "max-content" }}>
-              {/* First set of cards */}
-              {portfolioData.projects.map((item, index) => (
-                <div
-                  key={index}
-                  className={`portfolio-card bg-gradient-to-br ${item.bgColor} rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer shadow-xl flex-shrink-0 w-64 md:w-80 relative z-10`}
-                  style={{
-                    boxShadow: "0 15px 35px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2)",
-                  }}
-                  onMouseEnter={handleCardHover}
-                  onMouseLeave={handleCardLeave}
-                >
-                  <div className="overflow-hidden rounded-xl md:rounded-2xl mb-4 md:mb-6">
-                    <Image
-                      src={item.image || "/placeholder.svg"}
-                      alt={item.title}
-                      width={400}
-                      height={300}
-                      className="w-full h-36 md:h-48 object-cover transition-transform duration-500 hover:scale-110"
-                    />
-                  </div>
-                  <h3 className="text-lg md:text-2xl font-bold text-gray-800 mb-2 md:mb-3">{item.title}</h3>
-                  <p className="text-gray-800/90 leading-relaxed text-sm md:text-base mb-2">{item.description}</p>
-                  {item.tech && <div className="text-gray-800/70 text-xs md:text-sm font-medium mb-3">{item.tech}</div>}
-                  <div className="mt-3 md:mt-4 flex items-center text-gray-800 font-semibold text-sm md:text-base">
-                    <a href={item.demo || item.link} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                      <span>View Project</span>
-                      <svg
-                        className="w-3 h-3 md:w-4 md:h-4 ml-2 transition-transform group-hover:translate-x-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </a>
-                  </div>
-                </div>
-              ))}
-              {/* Duplicate set for seamless loop */}
-              {portfolioData.projects.map((item, index) => (
-                <div
-                  key={`duplicate-${index}`}
-                  className={`portfolio-card bg-gradient-to-br ${item.bgColor} rounded-2xl md:rounded-3xl p-4 md:p-6 cursor-pointer shadow-xl flex-shrink-0 w-64 md:w-80 relative z-10`}
-                  style={{
-                    boxShadow: "0 15px 35px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2)",
-                  }}
-                  onMouseEnter={handleCardHover}
-                  onMouseLeave={handleCardLeave}
-                >
-                  <div className="overflow-hidden rounded-xl md:rounded-2xl mb-4 md:mb-6">
-                    <Image
-                      src={item.image || "/placeholder.svg"}
-                      alt={item.title}
-                      width={400}
-                      height={300}
-                      className="w-full h-36 md:h-48 object-cover transition-transform duration-500 hover:scale-110"
-                    />
-                  </div>
-                  <h3 className="text-lg md:text-2xl font-bold text-gray-800 mb-2 md:mb-3">{item.title}</h3>
-                  <p className="text-gray-800/90 leading-relaxed text-sm md:text-base mb-2">{item.description}</p>
-                  {item.tech && <div className="text-gray-800/70 text-xs md:text-sm font-medium mb-3">{item.tech}</div>}
-                  <div className="mt-3 md:mt-4 flex items-center text-gray-800 font-semibold text-sm md:text-base">
-                    <a href={item.demo || item.link} target="_blank" rel="noopener noreferrer" className="flex items-center">
-                      <span>View Project</span>
-                      <svg
-                        className="w-3 h-3 md:w-4 md:h-4 ml-2 transition-transform group-hover:translate-x-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
+          
+          <div className="portfolio-content w-full">
+            <TextParallax 
+              slides={[
+                { 
+                  text: portfolioData.projects[0]?.title || "E-Commerce Platform", 
+                  image: portfolioData.projects[0]?.image || "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&h=200&fit=crop", 
+                  direction: "left" 
+                },
+                { 
+                  text: portfolioData.projects[1]?.title || "Social Media Dashboard", 
+                  image: portfolioData.projects[1]?.image || "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=400&h=200&fit=crop", 
+                  direction: "right" 
+                },
+                { 
+                  text: portfolioData.projects[2]?.title || "Task Management App", 
+                  image: portfolioData.projects[2]?.image || "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=200&fit=crop", 
+                  direction: "left" 
+                }
+              ]}
+              className="w-full"
+              textSize="text-4xl md:text-6xl lg:text-7xl"
+              spacing="px-4 md:px-8 gap-4 md:gap-8"
+            />
           </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section id="about" ref={aboutRef} className="about-section snap-section flex flex-col justify-center relative z-10">
+      <section id="about" ref={aboutRef} className="about-section snap-section flex flex-col justify-center relative z-10 min-h-screen bg-transparent">
         <div className="about-container max-w-7xl mx-auto px-4 md:px-6 py-12 md:py-16 lg:py-20">
           <div className="about-title text-center mb-12 md:mb-16">
-            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-800 mb-2 md:mb-4">{portfolioData.about.title}</h2>
-            <p className="text-gray-600 text-base md:text-lg">{portfolioData.about.subtitle}</p>
+            <h2 className="text-2xl md:text-4xl lg:text-5xl font-black text-gray-800 mb-2 md:mb-4" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>{portfolioData.about.title}</h2>
+            <p className="text-gray-600 text-base md:text-lg" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>{portfolioData.about.subtitle}</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
@@ -1064,10 +764,10 @@ export default function Portfolio() {
             </div>
             <div className="space-y-6 md:space-y-8 order-1 lg:order-2">
               <div>
-                <p className="about-text text-base md:text-xl leading-relaxed text-gray-700 mb-4 md:mb-6">
+                <p className="about-text text-base md:text-xl leading-relaxed text-gray-700 mb-4 md:mb-6" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
                   {portfolioData.about.mainText}
                 </p>
-                <p className="about-text text-sm md:text-lg leading-relaxed text-gray-600">
+                <p className="about-text text-sm md:text-lg leading-relaxed text-gray-600" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>
                   {portfolioData.about.secondaryText}
                 </p>
               </div>
@@ -1082,7 +782,7 @@ export default function Portfolio() {
                     }}
                   >
                     <div className="text-xl md:text-2xl mb-1 md:mb-2">{service.icon}</div>
-                    <h3 className="text-sm md:text-lg font-semibold text-gray-800">{service.title}</h3>
+                    <h3 className="text-sm md:text-lg font-semibold text-gray-800" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.05)' }}>{service.title}</h3>
                   </div>
                 ))}
               </div>
@@ -1092,7 +792,7 @@ export default function Portfolio() {
       </section>
 
       {/* Footer Section */}
-      <section id="contact" ref={footerRef} className="footer-section snap-section flex items-center justify-center relative px-4 z-10">
+      <section id="contact" ref={footerRef} className="footer-section snap-section flex items-center justify-center relative px-4 z-10 min-h-screen bg-transparent">
         <div className="footer-container text-center max-w-4xl mx-auto">
           <h2 className="footer-title text-2xl sm:text-4xl md:text-6xl lg:text-8xl font-black mb-8 md:mb-12 text-white leading-tight px-4">
             {portfolioData.branding.tagline}

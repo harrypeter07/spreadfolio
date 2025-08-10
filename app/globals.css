@@ -67,11 +67,10 @@ body::before {
   transform: translateZ(0); /* Force hardware acceleration */
 }
 
-/* Scroll Snap Container - Enhanced Smooth Scrolling */
+/* Scroll Container - Smooth Scrolling */
 .scroll-container {
   height: 100vh;
   overflow-y: auto;
-  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and Edge */
@@ -92,12 +91,10 @@ body::before {
   display: none; /* Chrome, Safari and Opera */
 }
 
-/* Section Scroll Snap - Enhanced Smooth Scrolling */
+/* Section - Smooth Scrolling */
 .snap-section {
   min-height: 100vh;
   height: 100vh; /* Force exact height to prevent gaps */
-  scroll-snap-align: start;
-  scroll-snap-stop: always;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -123,7 +120,6 @@ body::before {
 /* Smooth scrolling for mobile - Enhanced */
 @media (max-width: 768px) {
   .scroll-container {
-    scroll-snap-type: y proximity; /* Less strict snapping on mobile */
     /* Enhanced mobile smooth scrolling */
     -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
@@ -131,7 +127,6 @@ body::before {
   }
   
   .snap-section {
-    scroll-snap-stop: normal; /* Allow smoother scrolling on mobile */
     /* Enhanced mobile smooth scrolling */
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
@@ -316,7 +311,7 @@ a[href^="#"] {
 @media (max-width: 768px) {
   .portfolio-section {
     padding: 3rem 0;
-    min-height: 100vh; /* Ensure full height for snap */
+    min-height: 100vh; /* Ensure full height */
     display: flex;
     flex-direction: column;
     justify-content: center;
