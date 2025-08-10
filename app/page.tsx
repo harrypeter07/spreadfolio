@@ -237,7 +237,7 @@ export default function Portfolio() {
           if (arguments.length && container) {
             container.scrollTop = value
           }
-          return container?.scrollTop || 0
+          return container?.scrollTop ?? 0
         },
         getBoundingClientRect() {
           return {
