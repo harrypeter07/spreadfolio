@@ -69,7 +69,8 @@ export default function Portfolio() {
         rotation: 0, 
         z: (index) => (index === 6 ? 100 : 50 - index),
         opacity: 1,
-        scale: 1
+        scale: 1,
+        transformOrigin: "center center"
       })
       gsap.set(".main-title", { y: 50, opacity: 0 })
       gsap.set(".description-text", { y: 20, opacity: 0 })
@@ -120,19 +121,19 @@ export default function Portfolio() {
         "-=0.3",
       )
 
-      // 3. Card container comes from bottom
+      // 3. Card container comes from bottom and cards spread simultaneously
       heroTl.to(
         ".card-container",
         {
           y: 0,
           opacity: 1,
-          duration: 1.0,
-          ease: "back.out(1.2)",
+          duration: 1.2,
+          ease: "power2.out",
         },
         "+=0.3",
       )
 
-      // 4. Cards spread (restored original smooth animation)
+      // 4. Cards spread smoothly in one continuous motion
       heroTl.to(
         ".hero-card",
         {
@@ -193,10 +194,10 @@ export default function Portfolio() {
           },
           z: (index) => (index === 6 ? 100 : 50 - Math.abs(index - 3)),
           duration: 1.2,
-          ease: "back.out(1.4)",
-          stagger: 0.06,
+          ease: "power2.out",
+          stagger: 0.08,
         },
-        "+=0.1",
+        "-=0.8", // Start spreading while container is still moving up
       )
 
       // 5. Title appears
