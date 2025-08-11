@@ -193,9 +193,9 @@ export default function Portfolio() {
             }
           },
           z: (index) => (index === 6 ? 100 : 50 - Math.abs(index - 3)),
-          duration: 1.0,
-          ease: "power2.out",
-          stagger: 0.06,
+          duration: 2.8,
+          ease: "power3.out",
+          stagger: 0.12,
         },
         "+=0.1", // Start spreading after container is in position
       )
@@ -209,7 +209,7 @@ export default function Portfolio() {
           duration: 1,
           ease: "power2.out",
         },
-        "-=1.2",
+        "-=2.0",
       )
 
       // 6. Description and button
